@@ -12,6 +12,10 @@ raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/*.txt
 raw-data/upload-to-the-duck
 *.vdoc.py
 *.vdoc.r
+<<<<<<< HEAD
 raw-data/USA-Josh/explainer of presidency scraper_files/libs
 .Rproj.user
 *.parquet
+=======
+raw-data/USA-Josh/explainer of presidency scraper_files/libs
+>>>>>>> origin/main
