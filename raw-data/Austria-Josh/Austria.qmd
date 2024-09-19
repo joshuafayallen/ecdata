@@ -1,0 +1,451 @@
+---
+title: "Untitled"
+format: html
+jupyter: python3
+---
+
+```{python}
+%pip install random
+%pip install polars
+%pip install requests
+%pip install selenium
+
+
+```
+
+
+```{python}
+
+import random
+import time
+from selenium.webdriver.common.by import  By
+import requests 
+from selenium import webdriver
+import polars as pl
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.webdriver.support.ui import Select, WebDriverWait
+
+
+```
+
+
+
+
+```{python}
+
+base_url = 'https://www.bmeia.gv.at/ministerium/presse/reden'
+
+
+driver = webdriver.Firefox()
+
+driver.maximize_window()
+
+driver.get(base_url)
+
+
+accept_cookies = driver.find_element(By.CSS_SELECTOR, ".tru_cookie-d-full")
+
+
+accept_cookies.click()
+
+exit_but = driver.find_element(By.CSS_SELECTOR, '.tru_bnr-close-btn')
+
+
+exit_but.click()
+
+
+
+
+
+```
+
+
+Now lets figure out how to click through things. Lets first move the year clicker 
+
+
+
+
+
+```{python}
+
+
+Select(WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "press-year")))).select_by_value("2022")
+
+
+
+Select(WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "press-month")))).select_by_visible_text("März")
+
+
+
+```
+
+
+Lets get the information we want 
+
+
+
+
+```{python}
+
+get_urls = driver.find_elements(By.XPATH, "/html/body/main/div/div/div[2]/div[2]/div/div[1]/div/div/div/h3/a") 
+
+
+get_refs = [get_urls.get_attribute('href') for get_urls in get_urls]
+
+
+```
+
+
+```{python}
+
+
+Select(WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "press-year")))).select_by_value("2022")
+
+
+
+Select(WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "press-month")))).select_by_visible_text("August")
+
+
+
+```
+
+
+```{python}
+
+get_urls = driver.find_elements(By.XPATH, "/html/body/main/div/div/div[2]/div[2]/div/div[1]/div/div/div/h3/a") 
+
+
+get_refs = [get_urls.get_attribute('href') for get_urls in get_urls]
+
+
+
+```
+
+okay letrs define a function 
+
+
+
+```{python}
+
+def move_page(driver, year, month):
+    Select(WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "press-year")))).select_by_value(year)
+    Select(WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "press-month")))).select_by_visible_text(month)
+    time.sleep(5)
+    return driver
+
+
+
+
+```
+
+
+
+```{python}
+
+def scrape_links(driver):
+    get_urls = driver.find_elements(By.XPATH, "/html/body/main/div/div/div[2]/div[2]/div/div[1]/div/div/div/h3/a")
+    get_refs = [get_urls.get_attribute('href') for get_urls in get_urls]
+    return get_refs
+
+
+
+```
+
+Lets test her first
+
+
+```{python}
+
+links = []
+
+months_lst = ["Juli", "August", "September"]
+
+years_lst = ["2021", "2023", "2003"]
+
+for month in months_lst:
+    for year in years_lst:
+        driver = move_page(driver, month = month, year = year)
+        links_page = scrape_links(driver)
+        links.extend(links_page)
+        time.sleep(5)
+
+
+
+
+
+```
+
+Okay it goes months than years which is a little weird so lets change the loop structure
+
+
+
+```{python}
+
+months_lst = ["Jänner", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+
+break_out = False
+
+import numpy as np 
+
+years = np.arange(2003, 2023, 1).tolist()
+
+years_lst = [str(element) for element in years]
+
+
+years_lst.remove('2016')
+
+for year in years_lst:
+    for month in months_lst:
+        driver = move_page(driver, month = month, year = year)
+        links_page = scrape_links(driver)
+        links.extend(links_page)
+        time.sleep(5)
+        if month == "December" and year == "2023":
+           break_out = True
+           break
+        if break_out:
+            break
+
+links_df = pl.DataFrame(links, schema=['url'])
+
+
+
+links_df.write_csv("austrian_links.csv")
+
+
+links = links_df[0]
+
+
+
+
+
+```
+
+
+cool now lets do this 
+
+
+```{r}
+
+pacman::p_load(tidyverse, rvest, polite)
+
+austrian_links = read_csv("austrian_links.csv")
+
+
+
+get_text = read_html(austrian_links[[1,1]]) |>
+html_elements('#c699599 p') |>
+html_text() |>
+as_tibble() 
+
+
+getdate = read_html(austrian_links[[1,1]]) |>
+html_elements('.press_location_time') |>
+html_text() |>
+as_tibble()
+
+getsub = read_html(austrian_links[[1,1]]) |>
+html_elements('h2') |>
+html_text()
+
+bow(austrian_links[[1,1]])
+
+
+```
+
+
+Define the function 
+
+
+
+```{r}
+
+statement_scrapper = function(links){
+
+introduce = bow(links, user_agent = "For any questions contact Ryan Carlin at rcarlin@gsu.edu")
+
+
+
+get_text = read_html(links) |>
+html_elements('p') |>
+html_text() |>
+as_tibble()  |>
+rename(text = value)
+
+
+getdate = read_html(links) |>
+html_elements('.press_location_time') |>
+html_text() |>
+as_tibble() |>
+rename(date = value)
+
+getsub = read_html(links) |>
+html_elements('h2') |>
+html_text() |>
+as_tibble() |>
+rename(subject = value)
+
+
+text_dat = bind_cols(get_text, getdate, getsub, url = links) 
+                  
+
+
+
+sleepy_time = sample(5:8,1)
+
+cat("Done scraping", links, "going to sleep for", sleepy_time,
+"seconds", "\n")
+
+Sys.sleep(sleepy_time)
+
+return(text_dat)
+
+  
+}
+
+
+
+```
+
+
+Testing her
+
+
+
+```{r}
+
+test_links = austrian_links |>
+slice(433:435) |>
+deframe()
+
+test_links
+
+
+
+test_dat = map(test_links, statement_scrapper)
+
+
+test_df = test_dat |>
+list_rbind()
+
+
+table(test_df$url)
+
+test_df |>
+filter(!url %in% test_links)
+
+
+
+```
+
+
+implementing her 
+
+
+
+```{r}
+
+austrian_statements = map(austrian_links$url, possibly(statement_scrapper))
+
+
+
+```
+
+cleaning her 
+
+
+
+```{r}
+
+austrian_statements_df = austrian_statements |>
+list_rbind() |>
+filter(str_detect(text, "Telefon|Email", negate = TRUE))
+
+
+
+```
+
+Because I was done trying to fight with `trycatch` lets get a list of links that need to be rescraped. 
+
+
+
+```{r}
+
+links_scraped_1 = austrian_statements_df |>
+distinct(url) |>
+deframe()
+
+
+rescrape_these = austrian_links |>
+filter(!url %in% links_scraped_1) |>
+distinct(url) |>
+slice(1) |>
+deframe()
+
+
+
+```
+
+
+Okay it look like there are literally two of these things so I don't think it is worth iterating over these 
+
+
+
+```{r}
+
+get_subject = read_html(rescrape_these) |>
+html_elements('h2') |>
+html_text() |>
+as_tibble() |>
+slice(1) |>
+rename(subject = value)
+
+get_date = read_html(rescrape_these) |>
+html_elements('.press_location_time') |>
+html_text() |>
+as_tibble() |>
+rename(date = value)
+
+
+get_text = read_html(rescrape_these) |>
+html_elements('p') |>
+html_text() |>
+as_tibble() |>
+rename(text = value)
+
+text_to_bind = bind_cols(get_text, get_date, get_subject) |>
+mutate(url = rescrape_these)
+
+
+
+austrian_statements_bound = bind_rows(austrian_statements_df, text_to_bind) |>
+    mutate(date = str_squish(date),
+          date_fix = dmy(date, locale = 'de_AT'))
+
+austrian_statements_bound = bind_rows(austrian_statements_df, text_to_bind) |>
+    mutate(date = str_squish(date),
+          date_fix = dmy(date, locale = 'de_AT'))
+
+
+check = austrian_statements_bound |>
+  filter(is.na(date_fix)) |>
+  distinct(url, .keep_all = TRUE) |>
+  mutate(date_fix = str_replace(date, 'Januar', '01'),
+         date_fix_two = dmy(date_fix)) |>
+  select(url, date_fix_two)
+
+fixed_dates = austrian_statements_bound |>
+    left_join(check, join_by(url)) |>
+    mutate(date = coalesce(date_fix, date_fix_two)) |>
+    select(-c(date_fix, date_fix_two))
+
+glimpse(fixed_dates)
+
+write_csv(fixed_dates, "austrian_statements.csv")
+
+
+
+
+```
+

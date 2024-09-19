@@ -1,0 +1,2022 @@
+---
+title: "Italian Scrappers"
+format: html
+juypter: python3
+---
+
+This is the scraping script to get the links for the past presidents. The Italian government keeps a dynamic copy of the websites. So we had to scrape each of these pages individually.
+
+```{python}
+pip install selenium
+pip install polars 
+
+```
+
+
+
+```{python}
+import polars as pl 
+import re 
+import time 
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import  By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException
+
+```
+
+
+
+```{python}
+
+links = pl.read_csv('president_links.csv')
+
+links_vec = links['url']
+
+print(links_vec)
+
+driver = webdriver.Firefox()
+
+
+driver.get(links_vec[0])
+
+```
+
+
+
+So the issue is that now I have to click on things. It looks like for the first links we can grab the hrefs from 
+
+
+```{python}
+
+amato = links.filter(pl.col('president') == "amato")
+
+amato_links = amato['url']
+
+
+driver.get(amato_links[0])
+```
+
+If you just click on a year it will give you the next button 
+
+
+
+```{python}
+
+next_button = driver.find_element(By.CSS_SELECTOR, 'body > center:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+
+
+links_page =  driver.find_elements(By.CLASS_NAME, 'linktesto')
+
+links_get  = [links_page.get_attribute('href') for links_page in links_page]
+
+
+
+
+speaker = driver.find_elements(By.XPATH, '/html/body/center/table/tbody/tr[2]/td[2]/table/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td[3]')
+
+speaks = [speaker.get_attribute('textContent') for speaker in speaker]
+
+
+
+
+current_page = driver.find_element(By.CSS_SELECTOR, 'body > center:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > span:nth-child(1) > b:nth-child(1)')
+
+current_page.get_attribute('textContent')
+
+next_button.click()
+
+```
+
+
+
+
+
+```{python}
+
+
+
+def get_links(driver):
+    links_page = driver.find_elements(By.CLASS_NAME, 'linktesto')
+    links_get = [links_page.get_attribute('href') for links_page in links_page]
+    return links_get
+
+
+def get_speaker(driver):
+    speaker_page = driver.find_elements(By.XPATH, '/html/body/center/table/tbody/tr[2]/td[2]/table/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td[3]')
+    speakers_get = [speaker_page.get_attribute('textContent') for speaker_page in speaker_page]
+    return speakers_get
+
+
+def get_date(driver):
+    date_page = driver.find_elements(By.XPATH, '/html/body/center/table/tbody/tr[2]/td[2]/table/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td[1]')
+    date_get = [date_page.get_attribute('textContent') for date_page in date_page]
+    return date_get
+
+def get_current_page(driver):
+    current_page_select = driver.find_element(By.CSS_SELECTOR, 'body > center:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > span:nth-child(1) > b:nth-child(1)')
+    current_page = current_page_select.get_attribute('textContent')
+    return current_page
+
+```
+
+
+Honestly we can just join these by links to get what we want 
+
+
+
+```{python}
+
+
+links = []
+
+speaker = []
+
+date = []
+
+current_page = 1  # Initialize the current page counter
+
+while current_page < 64:
+    # Scrape the current page
+    page = get_current_page(driver)
+    links_current = get_links(driver)
+    date_current = get_date(driver)
+    speaker_current = get_speaker(driver)
+    links.extend(links_current)
+    speaker.extend(speaker_current)
+    date.extend(date_current)
+
+    # Check if this is the last page before clicking the next button
+    if current_page == 63:
+        break
+
+    # Click the next button
+    next_button = driver.find_element(By.CSS_SELECTOR, 'body > center:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+    next_button.click()
+    time.sleep(5)  # Wait for the page to load
+
+    # Increment the current_page counter
+    current_page += 1
+
+# Handle the last page separately
+if current_page == 63:  # This ensures we handle page 64
+    links_current = get_links(driver)
+    date_current = get_date(driver)
+    speaker_current = get_speaker(driver)
+    links.extend(links_current)
+    speaker.extend(speaker_current)
+    date.extend(date_current)
+
+
+
+
+
+```
+
+
+```{python}
+
+last_page_links = get_links(driver)
+
+last_page_date = get_date(driver)
+
+last_page_speaker = get_speaker(driver)
+
+links.extend(last_page_links)
+
+date.extend(last_page_date)
+
+speaker.extend(last_page_speaker)
+
+```
+
+
+```{python}
+
+data_dict = {'speaker' : speaker, 'date' : date}
+
+links_data = pl.DataFrame(data_dict)
+
+## problem is that there extraneous information 
+
+
+clean_links_data  = links_data.filter((pl.col('speaker') != "Fonte") & (pl.col('speaker').str.len_chars() > 0 ))
+
+
+links_dat = pl.DataFrame(links, schema=['url'])
+
+add_links = pl.concat([clean_links_data, links_dat], how = 'horizontal').with_columns(year = 2000).with_columns(president = pl.lit('Amato'))
+
+
+
+
+
+
+```
+
+
+
+
+```{python}
+
+
+links = []
+
+speaker = []
+
+date = []
+
+current_page = 1  # Initialize the current page counter
+
+while current_page < 26:
+    # Scrape the current page
+    page = get_current_page(driver)
+    links_current = get_links(driver)
+    date_current = get_date(driver)
+    speaker_current = get_speaker(driver)
+    links.extend(links_current)
+    speaker.extend(speaker_current)
+    date.extend(date_current)
+
+    # Check if this is the last page before clicking the next button
+    if current_page == 25:
+        break
+
+    # Click the next button
+    next_button = driver.find_element(By.CSS_SELECTOR, 'body > center:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+    next_button.click()
+    time.sleep(5)  # Wait for the page to load
+
+    # Increment the current_page counter
+    current_page += 1
+
+# Handle the last page separately
+if current_page == 63:  # This ensures we handle page 64
+    links_current = get_links(driver)
+    date_current = get_date(driver)
+    speaker_current = get_speaker(driver)
+    links.extend(links_current)
+    speaker.extend(speaker_current)
+    date.extend(date_current)
+
+
+```
+
+
+
+
+```{python}
+last_page_links = get_links(driver)
+
+last_page_date = get_date(driver)
+
+last_page_speaker = get_speaker(driver)
+
+links.extend(last_page_links)
+
+date.extend(last_page_date)
+
+speaker.extend(last_page_speaker)
+
+
+
+data_dict_two = {'speaker' : speaker, 'date' : date}
+
+
+data_two = pl.DataFrame(data_dict_two)
+
+data_two.head()
+
+clean_data_two = data_two.filter((pl.col('speaker') != "Fonte") & (pl.col('date').str.len_chars() > 0))
+
+links_data_two = pl.DataFrame(links, schema=['url'])
+
+
+links_data_two.head()
+
+links_data_two = pl.concat([clean_data_two, links_data_two], how  = 'horizontal').with_columns(year = 2001).with_columns(president = pl.lit('Amato'))
+
+add_links.head()
+
+
+full_links =  pl.concat([add_links, links_data_two], how = 'vertical')
+
+print(full_links)
+
+
+full_links.write_csv("Governo Amato II_statements/links.csv")
+
+
+```
+
+
+
+
+
+
+```{python}
+
+president_links = pl.read_csv('president_links.csv')
+
+president_links.head()
+
+berlusconi_one = president_links[1,1]
+
+print(berlusconi_one)
+
+
+driver.get(berlusconi_one)
+
+```
+
+
+
+
+```{python}
+
+links_el = driver.find_elements(By.XPATH, '/html/body/table[2]/tbody/tr[1]/td[2]/div/table/tbody/tr[2]/td/div[1]/table/tbody/tr/td[3]/a')
+
+links_page = [links_el.get_attribute('href') for links_el in links_el]
+
+date_el = driver.find_elements(By.XPATH, '/html/body/table[2]/tbody/tr[1]/td[2]/div/table/tbody/tr[2]/td/div[1]/table/tbody/tr/td[1]')
+
+
+date_page = [date_el.get_attribute('textContent') for date_el in date_el]
+
+print(date_page)
+
+
+current_page = driver.find_element(By.ID, 'tdpagina')
+
+
+
+raw_current = current_page.get_attribute('textContent')
+
+raw_current.strip()
+
+page = raw_current.strip()
+
+page = re.search(r'pagina (\d+)', page)
+
+page.group(1)
+
+
+next_button = driver.find_element(By.XPATH, "//*[contains(text(), 'successiva')]")
+
+
+next_button.click()
+
+
+```
+
+
+
+```{python}
+
+def get_links(driver):
+    links_el = driver.find_elements(By.XPATH, '/html/body/table[2]/tbody/tr[1]/td[2]/div/table/tbody/tr[2]/td/div[1]/table/tbody/tr/td[3]/a')
+    links_page = [links_el.get_attribute('href') for links_el in links_el]
+    return links_page
+
+
+def get_date(driver):
+    date_el = driver.find_elements(By.XPATH, '/html/body/table[2]/tbody/tr[1]/td[2]/div/table/tbody/tr[2]/td/div[1]/table/tbody/tr/td[1]')
+    date_page = [date_el.get_attribute('textContent') for date_el in date_el]
+    return date_page
+
+
+
+
+
+```
+
+
+```{python}
+
+while current_page < 26:
+    
+    page = get_current_page(driver)
+    links_current = get_links(driver)
+    date_current = get_date(driver)
+    speaker_current = get_speaker(driver)
+    links.extend(links_current)
+    speaker.extend(speaker_current)
+    date.extend(date_current)
+
+    
+    if current_page == 25:
+        break
+
+   
+    next_button = driver.find_element(By.CSS_SELECTOR, 'body > center:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+    next_button.click()
+    time.sleep(5)  
+
+   
+    current_page += 1
+
+
+if current_page == 63:  
+    links_current = get_links(driver)
+    date_current = get_date(driver)
+    speaker_current = get_speaker(driver)
+    links.extend(links_current)
+    speaker.extend(speaker_current)
+    date.extend(date_current)
+
+
+```
+
+```{python}
+
+links = []
+
+dates = []
+
+current_page = 1
+
+while current_page < 86:
+    links_page = get_links(driver)
+    date_page = get_date(driver)
+    links.extend(links_page)
+    dates.extend(date_page)
+    next_button = driver.find_element(By.XPATH, "//*[contains(text(), 'successiva')]")
+    next_button.click()
+    time.sleep(5)
+    current_page += 1
+    if current_page == 85:
+        next_button = driver.find_element(By.XPATH, "//*[contains(text(), 'successiva')]")
+        next_button.click()
+        links_page = get_links(driver)
+        date_page = get_date(driver)
+        links.extend(links_page)
+        dates.extend(date_page)
+        break
+
+
+
+
+
+
+```
+
+
+
+
+```{python}
+last_page_links = get_links(driver)
+last_page_date = get_date(driver)
+
+links.extend(last_page_links)
+dates.extend(last_page_date)
+
+
+```
+
+```{python}
+
+
+
+links_dict = {'date' : dates, 'url' : links}
+
+
+berlusc_one = pl.DataFrame(links_dict).with_columns(president = pl.lit("Berlusconi"))
+
+
+berlusc_one.tail()
+
+berlusc_one.write_csv('Governo Berlusconi II_statements/links.csv')
+
+
+```
+
+
+
+
+```{python}
+
+
+next_link = president_links[2,1]
+
+driver.get(next_link)
+
+```
+
+
+
+
+
+
+```{python}
+
+
+
+def get_links(driver):
+    links_page = driver.find_elements(By.CLASS_NAME, 'linktesto')
+    links_get = [links_page.get_attribute('href') for links_page in links_page]
+    return links_get
+
+
+def get_speaker(driver):
+    speaker_page = driver.find_elements(By.XPATH, '/html/body/div[2]/table/tbody/tr/td[2]/table/tbody/tr[5]/td/table/tbody/tr/td[3]/span')
+    speakers_get = [speaker_page.get_attribute('textContent') for speaker_page in speaker_page]
+    return speakers_get
+
+
+def get_date(driver):
+    date_page = driver.find_elements(By.XPATH, '/html/body/div[2]/table/tbody/tr/td[2]/table/tbody/tr[5]/td/table/tbody/tr/td[1]')
+    date_get = [date_page.get_attribute('textContent') for date_page in date_page]
+    return date_get
+
+
+
+```
+
+
+
+```{python}
+
+get_date(driver)
+
+
+
+
+```
+
+
+
+```{python}
+
+next_button = driver.find_element(By.CSS_SELECTOR, '#contenuto > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+
+next_button.click()
+
+
+get_speaker(driver)
+
+
+
+```
+
+
+
+
+```{python}
+
+links = []
+
+dates = []
+
+speaker = []
+
+current_page = 1 
+
+
+
+while current_page < 21:
+    # Scrape the current page
+    links_current = get_links(driver)
+    date_current = get_date(driver)
+    speaker_current = get_speaker(driver)
+    links.extend(links_current)
+    speaker.extend(speaker_current)
+    date.extend(date_current)
+    next_button = driver.find_element(By.CSS_SELECTOR,  '#contenuto > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+    next_button.click()
+    time.sleep(5)  # Wait for the page to load
+
+    # Increment the current_page counter
+    current_page += 1
+
+# Handle the last page separately
+    if current_page == 21:  # This ensures we handle page 64
+        links_current = get_links(driver)
+        date_current = get_date(driver)
+        speaker_current = get_speaker(driver)
+        links.extend(links_current)
+        speaker.extend(speaker_current)
+        date.extend(date_current)
+        next_button = driver.find_element(By.CSS_SELECTOR,  '#contenuto > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+        next_button.click()
+        links_current = get_links(driver)
+        date_current = get_date(driver)
+        speaker_current = get_speaker(driver)
+        links.extend(links_current)
+        speaker.extend(speaker_current)
+        date.extend(date_current)
+        break
+
+
+
+
+
+
+
+
+```
+
+
+
+
+```{python}
+links_last_page = get_links(driver)
+
+speaker_last_page = get_speaker(driver)
+
+date_last_page = get_date(driver)
+
+
+links.extend(links_last_page)
+
+speaker.extend(speaker_last_page)
+
+date.extend(date_current)
+
+
+link_speaker_dict = {'url': links, 'speaker' : speaker}
+
+
+
+date_speaker_data = pl.DataFrame(link_speaker_dict)
+
+
+date_speaker_data = date_speaker_data.with_columns(president = pl.lit('Berlusconi'), year = 2001)
+
+date_speaker_data.write_csv("Governo Berlusconi III_statements/berlusc_2002.csv")
+
+
+
+
+```
+
+
+
+
+```{python}
+
+
+links = []
+
+dates = []
+
+speaker = []
+
+current_page = 1 
+
+while current_page < 51:
+    # Scrape the current page
+    links_current = get_links(driver)
+    date_current = get_date(driver)
+    speaker_current = get_speaker(driver)
+    links.extend(links_current)
+    speaker.extend(speaker_current)
+    date.extend(date_current)
+    next_button = driver.find_element(By.CSS_SELECTOR,  '#contenuto > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+    next_button.click()
+    time.sleep(5)  # Wait for the page to load
+
+    # Increment the current_page counter
+    current_page += 1
+
+# Handle the last page separately
+    if current_page == 51:  # This ensures we handle page 64
+        links_current = get_links(driver)
+        date_current = get_date(driver)
+        speaker_current = get_speaker(driver)
+        links.extend(links_current)
+        speaker.extend(speaker_current)
+        date.extend(date_current)
+        next_button = driver.find_element(By.CSS_SELECTOR,  '#contenuto > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+        next_button.click()
+        links_current = get_links(driver)
+        date_current = get_date(driver)
+        speaker_current = get_speaker(driver)
+        links.extend(links_current)
+        speaker.extend(speaker_current)
+        date.extend(date_current)
+        break
+
+
+```
+
+
+
+
+
+```{python}
+
+link_speaker_dict = {'url': links, 'speaker' : speaker}
+
+
+second_speaker_data = pl.DataFrame(link_speaker_dict).with_columns(president = pl.lit('Berlusconi'), year = 2002)
+
+full_berlusconi_iii = pl.concat([second_speaker_data,date_speaker_data ], how = 'vertical')
+
+full_berlusconi_iii.write_csv("Governo Berlusconi III_statements/berlusc_three_links.csv")
+
+
+full_berlusconi_iii.head()
+
+```
+
+
+
+
+```{python}
+
+next_link = president_links[3,1]
+
+
+president_links[3]
+
+driver.get(next_link)
+
+
+
+```
+
+
+
+umm the website is being super weird like I can't get the drop downs to move to the correct years and months and we have reportedly 114 
+
+
+the cut point is going to be the 41st page since like I after that the website clicks but whoever was in charge of setting up the site really fucked it up. 
+
+
+
+
+'/html/body/div[2]/table/tbody/tr/td[2]/table/tbody/tr[5]/td/table/tbody/tr/td[3]/span'
+
+
+```{python}
+
+link_el = driver.find_elements(By.XPATH, '//*[@id="tdTesto"]/div/table/tbody/tr/td[3]/a')
+
+test  = [link_el.get_attribute('href') for link_el in link_el]
+
+speaker_el = driver.find_elements(By.XPATH, '//*[@id="tdTesto"]/div/table/tbody/tr/td[2]')
+
+speaker =  [speaker_el.get_attribute('textContent') for speaker_el in speaker_el]
+
+speaker
+
+
+
+
+
+```
+
+
+
+
+```{python}
+
+def get_links(driver):
+    link_el = driver.find_elements(By.XPATH, '//*[@id="tdTesto"]/div/table/tbody/tr/td[3]/a')
+    links_page = [link_el.get_attribute('href') for link_el in link_el]
+    return links_page
+
+def get_speaker(driver):
+    speaker_el = driver.find_elements(By.XPATH, '//*[@id="tdTesto"]/div/table/tbody/tr/td[2]')
+    speakers_page = [speaker_el.get_attribute('textContent') for speaker_el in speaker_el]
+    return speakers_page
+
+
+def get_date(driver):
+    date_el = driver.find_elements(By.XPATH, '//*[@id="tdTesto"]/div/table/tbody/tr/td[1]')
+    date_page = [date_el.get_attribute('textContent') for date_el in date_el]
+    return date_page 
+
+
+
+
+
+
+```
+
+
+```{python}
+
+
+next_button = driver.find_element(By.XPATH, "//*[contains(text(), 'successiva')]")
+
+
+next_button.click()
+
+def text_next_button(driver):
+    next_el = driver.find_element(By.XPATH, "//*[contains(text(), 'successiva')]")
+    return next_el
+
+
+
+```
+
+
+
+```{python}
+
+get_speaker(driver)
+
+```
+
+
+```{python}
+
+links = []
+
+date = []
+
+speaker = []
+
+page_number = 1
+
+
+while page_number <= 41:
+    links_page = get_links(driver)
+    date_page = get_date(driver)
+    speaker_page = get_speaker(driver)
+    links.extend(links_page)
+    date.extend(date_page)
+    speaker.extend(speaker_page)
+    page_number += 1
+    next_button = text_next_button(driver)
+    next_button.click()
+    time.sleep(5)
+    if page_number > 41:
+        break
+
+
+
+```
+
+
+
+```{python}
+
+data_dict = {'date' : date, 'speaker' : speaker, 'url' : links}
+
+berlusconi_iv = pl.DataFrame(data_dict)
+
+
+berlusconi_iv.write_csv("Governo Berlusconi IV_statements/links.csv")
+
+
+
+
+
+
+```
+
+
+
+
+
+Cool. We are really grinding today 
+
+
+
+```{python}
+
+conte_link = president_links[4,1]
+
+president_links.head()
+
+
+
+
+driver.get(conte_link)
+
+```
+
+
+```{python}
+
+links_el = driver.find_elements(By.CLASS_NAME, 'box_text_anchor')
+
+links = [links_el.get_attribute('href') for links_el in links_el]
+
+
+next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+
+
+next_button.click()
+
+```
+
+```{python}
+
+def get_links(driver):
+    links_el = driver.find_elements(By.CLASS_NAME, 'box_text_anchor')
+    links_page = [links_el.get_attribute('href') for links_el in links_el]
+    return links_page
+
+
+
+
+```
+
+
+
+
+
+```{python}
+
+links = []
+
+page = 1
+
+while page < 58:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    page += 1
+    time.sleep(5)
+    next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+    next_button.click()
+    if page == 59:
+        links_page = get_links(driver)
+        links.extend(links_page)
+        break
+    
+
+
+```
+
+
+
+
+```{python}
+
+conte_dat = pl.DataFrame(links, schema=['links']).with_columns(president = pl.lit('Conte'))
+
+
+conte_dat.write_csv("Governo Conte I_statements/links.csv")
+
+```
+
+
+
+```{python}
+
+
+conte_two = president_links[5,1]
+
+driver.get(conte_two)
+
+```
+
+
+
+```{python}
+
+links = []
+
+page = 1
+
+while page <= 95:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    page += 1
+    time.sleep(5)
+    next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+    next_button.click()
+    if page == 95:
+        links_page = get_links(driver)
+        links.extend(links_page)
+        break
+    
+
+
+```
+
+
+
+```{python}
+
+conte_ii = pl.DataFrame(links, schema =['urls'])
+
+
+conte_ii.write_csv("Governo Conte II_statements/links.csv")
+
+```
+
+
+
+```{python}
+
+conte_alema = president_links[6,1]
+driver.get(conte_two)
+
+
+```
+
+
+
+
+```{python}
+
+
+links_el = driver.find_elements(By.XPATH, '/html/body/center/table[2]/tbody/tr/td[2]/font/a')
+
+date_el = driver.find_elements(By.XPATH, '/html/body/center/table[2]/tbody/tr/td[1]')
+
+speaker = driver.find_elements(By.XPATH, '/html/body/center/table[2]/tbody/tr/td[3]')
+
+[speaker.get_attribute('textContent') for speaker in speaker]
+
+
+
+```
+
+
+
+```{python}
+
+def get_links(driver):
+    links_el = driver.find_elements(By.XPATH, '/html/body/center/table[2]/tbody/tr/td[2]/font/a')
+    links_page = [links_el.get_attribute('href') for links_el in links_el]
+    return links_page
+
+def get_date(driver):
+    date_el = driver.find_elements(By.XPATH, '/html/body/center/table[2]/tbody/tr/td[1]')
+    date_page = [date_el.get_attribute('textContent') for date_el in date_el]
+    return date_page
+
+
+def get_speaker(driver):
+    speaker_el = driver.find_elements(By.XPATH, '/html/body/center/table[2]/tbody/tr/td[3]')
+    speaker = [speaker_el.get_attribute('textContent') for speaker_el in speaker_el]
+    return speaker
+
+
+
+
+def text_next_button(driver):
+    next_el = driver.find_element(By.XPATH, "//*[contains(text(), 'Successivi')]")
+    return next_el
+
+```
+
+
+```{python}
+
+page = 1
+
+links = []
+
+date = []
+
+speaker = []
+
+while page <= 14:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    speaker_page = get_speaker(driver)
+    speaker.extend(speaker_page)
+    date_page = get_date(driver)
+    date.extend(date_page)
+    page += 1 
+    next_but = text_next_button(driver)
+    next_but.click()
+    time.sleep(5)
+    if page == 14:
+        next_but = text_next_button(driver)
+        next_but.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        speaker_page = get_speaker(driver)
+        speaker.extend(speaker_page)
+        date_page = get_date(driver)
+        date.extend(date_page)
+        break 
+
+
+
+
+```
+
+
+```{python}
+
+
+first_data = {'links': links, 'speaker' : speaker}
+
+first_data = pl.DataFrame(first_data)
+
+
+
+
+```
+
+
+```{python}
+
+page = 1
+
+
+
+while page <= 59:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    speaker_page = get_speaker(driver)
+    speaker.extend(speaker_page)
+    date_page = get_date(driver)
+    date.extend(date_page)
+    page += 1 
+    next_but = text_next_button(driver)
+    next_but.click()
+    time.sleep(5)
+    if page == 59:
+        next_but = text_next_button(driver)
+        next_but.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        speaker_page = get_speaker(driver)
+        speaker.extend(speaker_page)
+        date_page = get_date(driver)
+        date.extend(date_page)
+        break 
+
+```
+
+
+
+```{python}
+
+links_speak = {'links': links}
+
+len(links)
+
+len(speaker)
+len(date)
+
+links_speak = pl.DataFrame(links_speak)
+
+links_speak.write_csv("Governo D'Alema - Governo D'Alema II_statements/links.csv")
+
+
+
+```
+
+
+```{python}
+
+driver.quit()
+
+```
+
+
+
+```{python}
+
+driver = webdriver.Firefox()
+
+```
+
+
+
+```{python}
+
+alema_amato = president_links[7,1]
+
+driver.get(alema_amato)
+
+
+
+```
+
+
+```{python}
+
+
+links_el = driver.find_elements(By.XPATH, "/html/body/center/table[2]/tbody/tr/td[2]/span/a")
+
+
+links_test = [links_el.get_attribute('href') for links_el in links_el]
+
+len(links_test)
+
+subjects_test = get_speaker(driver)
+
+len(subjects_test)
+
+next_but = text_next_button(driver)
+
+next_but.click()
+
+
+```
+
+
+```{python}
+
+def get_links(driver):
+    links_el = driver.find_elements(By.XPATH, '/html/body/center/table[2]/tbody/tr/td[2]/span/a')
+    links_page = [links_el.get_attribute('href') for links_el in links_el]
+    return links_page
+
+
+```
+
+
+
+```{python}
+page = 1
+
+links = []
+
+date = []
+
+speaker = []
+
+while page <= 14:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    speaker_page = get_speaker(driver)
+    speaker.extend(speaker_page)
+    date_page = get_date(driver)
+    date.extend(date_page)
+    page += 1 
+    next_but = text_next_button(driver)
+    next_but.click()
+    time.sleep(5)
+    if page == 14:
+        next_but = text_next_button(driver)
+        next_but.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        speaker_page = get_speaker(driver)
+        speaker.extend(speaker_page)
+        date_page = get_date(driver)
+        date.extend(date_page)
+        break 
+
+```
+
+
+```{python}
+
+first_data_dict = {"links" : links, "speaker" :speaker }
+
+len(links)
+
+len(speaker)
+
+first_data = pl.DataFrame(first_data_dict)
+
+
+first_data.tail()
+
+```
+
+
+
+
+```{python}
+
+page = 1
+
+links = []
+
+date = []
+
+speaker = []
+
+while page <= 85:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    speaker_page = get_speaker(driver)
+    speaker.extend(speaker_page)
+    date_page = get_date(driver)
+    date.extend(date_page)
+    page += 1 
+    next_but = text_next_button(driver)
+    next_but.click()
+    time.sleep(5)
+    if page == 14:
+        next_but = text_next_button(driver)
+        next_but.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        speaker_page = get_speaker(driver)
+        speaker.extend(speaker_page)
+        date_page = get_date(driver)
+        date.extend(date_page)
+        break 
+
+
+```
+
+
+
+```{python}
+
+second_data = {"links" : links, "speaker" : speaker}
+
+second_data = pl.DataFrame(second_data)
+
+bound_data = pl.concat([first_data, second_data], how = 'vertical')
+
+
+
+```
+
+
+```{python}
+
+page = 1
+
+links = []
+
+date = []
+
+speaker = []
+
+while page <= 51:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    speaker_page = get_speaker(driver)
+    speaker.extend(speaker_page)
+    date_page = get_date(driver)
+    date.extend(date_page)
+    page += 1 
+    next_but = text_next_button(driver)
+    next_but.click()
+    time.sleep(5)
+    if page == 51:
+        next_but = text_next_button(driver)
+        next_but.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        speaker_page = get_speaker(driver)
+        speaker.extend(speaker_page)
+        date_page = get_date(driver)
+        date.extend(date_page)
+        break 
+
+
+```
+
+
+
+```{python}
+
+third_data = {"links" : links, "speaker" : speaker}
+
+third_data = pl.DataFrame(third_data)
+
+
+full_data = pl.concat([bound_data, third_data], how = 'vertical')
+
+full_data[0,0]
+
+
+full_data.write_csv("Governo D'Alema II - Governo Amato II_statements/links.csv")
+
+
+
+```
+
+
+
+```{python}
+
+president_links[8]
+
+draghi = president_links[8,1]
+
+driver.get(draghi)
+
+
+```
+
+
+From the bottom it looks like the last page is 77
+
+```{python}
+
+def get_links(driver):
+    links_el = driver.find_elements(By.CLASS_NAME, 'box_text_anchor')
+    links_page = [links_el.get_attribute('href') for links_el in links_el]
+    return links_page
+
+
+```
+
+
+
+```{python}
+
+check  = get_links(driver)
+
+
+len(check)
+```
+
+
+
+```{python}
+links = []
+
+page = 1
+
+while page <= 76:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    page += 1
+    time.sleep(5)
+    next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+    next_button.click()
+    if page == 76:
+        next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+        next_button.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        break
+
+```
+
+
+
+```{python}
+
+next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+
+next_button.click()
+
+
+last_page_links = get_links(driver)
+
+links.extend(last_page_links)
+
+
+draghi_links = pl.DataFrame(links, schema = ['url'])
+
+draghi_links.write_csv('Governo Draghi_statements/links.csv')
+
+
+```
+
+
+
+```{python}
+
+
+president_links[9]
+
+gentiloni = president_links[9,1]
+
+
+driver.get(gentiloni)
+
+```
+
+
+
+```{python}
+links = []
+
+page = 1
+
+while page <= 47:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    page += 1
+    time.sleep(5)
+    next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+    next_button.click()
+    if page == 47:
+        next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+        next_button.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        break
+```
+
+
+```{python}
+
+next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+next_button.click()
+
+
+last_page_links = get_links(driver)
+
+links.extend(last_page_links)
+
+
+gentiloni_links = pl.DataFrame(links, schema =['url'])
+
+gentiloni_links.write_csv('Governo Gentiloni_statements/links.csv')
+
+
+
+```
+
+
+
+```{python}
+
+president_links[10]
+
+
+letta =  president_links[10,1]
+
+
+driver.get(letta)
+
+```
+
+
+
+```{python}
+
+next_but = text_next_button(driver)
+
+```
+
+```{python}
+
+def get_links(driver):
+    links_el = driver.find_elements(By.XPATH, '/html/body/div/div[2]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[3]/td/table[2]/tbody/tr[1]/td/div/table/tbody/tr/td[3]/a')
+    links_page = [links_el.get_attribute('href') for links_el in links_el]
+    return links_page
+
+def get_date(driver):
+    date_el = driver.find_elements(By.XPATH, '/html/body/div/div[2]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[3]/td/table[2]/tbody/tr[1]/td/div/table/tbody/tr/td[1]')
+    date_page = [date_el.get_attribute('textContent') for date_el in date_el]
+    return date_page
+
+
+def get_speaker(driver):
+    speaker_el = driver.find_elements(By.XPATH, '/html/body/div/div[2]/table/tbody/tr[1]/td[2]/div/table/tbody/tr[3]/td/table[2]/tbody/tr[1]/td/div/table/tbody/tr/td[2]')
+    speaker = [speaker_el.get_attribute('textContent') for speaker_el in speaker_el]
+    return speaker
+
+
+
+
+def text_next_button(driver):
+    next_el = driver.find_element(By.XPATH, "//*[contains(text(), 'successiva')]")
+    return next_el
+
+```
+
+
+
+```{python}
+
+next_but = text_next_button(driver)
+
+next_but.click()
+
+
+get_links(driver)
+
+get_date(driver)
+
+get_speaker(driver)
+
+```
+
+
+
+```{python}
+
+page = 1 
+
+
+links = []
+
+speaker = []
+
+
+date = []
+
+while page <= 29:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    dates_page = get_date(driver)
+    date.extend(dates_page)
+    speaker_page = get_speaker(driver)
+    speaker.extend(speaker_page)
+    page += 1
+    next_but = text_next_button(driver)
+    next_but.click()
+    time.sleep(5)
+    if page == 29:
+        next_but = text_next_button(driver)
+        next_but.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        dates_page = get_date(driver)
+        date.extend(dates_page)
+        speaker_page = get_speaker(driver)
+        speaker.extend(speaker_page)
+        break
+
+
+
+
+
+```
+
+
+
+
+```{python}
+
+data_dict = {'date': date, 'speaker': speaker, 'links': links}
+
+
+letta = pl.DataFrame(data_dict)
+
+
+letta.tail()
+
+letta.write_csv('Governo Letta_statements/links.csv')
+
+
+
+```
+
+
+
+```{python}
+
+president_links[11]
+
+
+monti =  president_links[11,1]
+
+
+driver.get(monti)
+
+```
+
+
+
+```{python}
+
+get_links(driver)
+
+get_speaker(driver)
+
+get_date(driver)
+
+
+next_but = text_next_button(driver)
+
+
+next_but.click()
+
+```
+
+
+
+
+```{python}
+page = 1 
+
+
+links = []
+
+speaker = []
+
+
+date = []
+
+while page <= 34:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    dates_page = get_date(driver)
+    date.extend(dates_page)
+    speaker_page = get_speaker(driver)
+    speaker.extend(speaker_page)
+    page += 1
+    next_but = text_next_button(driver)
+    next_but.click()
+    time.sleep(5)
+    if page == 34:
+        next_but = text_next_button(driver)
+        next_but.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        dates_page = get_date(driver)
+        date.extend(dates_page)
+        speaker_page = get_speaker(driver)
+        speaker.extend(speaker_page)
+        break
+
+
+```
+
+
+
+```{python}
+
+data_dict = {'date' : date, 'speaker': speaker, 'url' : links}
+
+monti_statements = pl.DataFrame(data_dict)
+
+
+monti_statements.tail()
+
+
+monti_statements.write_csv('Governo Monti_statements/links.csv')
+
+
+```
+
+
+
+```{python}
+
+
+president_links[12]
+
+
+
+
+prodi_alema =  president_links[12,1]
+
+
+driver.get(prodi_alema)
+
+```
+
+
+Ugh this is annoying basically what we have to do is click on each link 
+
+
+
+```{python}
+
+links_click = driver.find_elements(By.XPATH, '/html/body/p[2]/a[1]')
+
+links_to_click = [links_click.get_attribute('href') for links_click in links_click]
+
+## wait that wouldn't work 
+
+links_click = driver.find_element(By.XPATH, '/html/body/p[2]/a[1]')
+## basically we need to iterate through the elements click then go back 
+
+
+links_page = driver.find_elements(By.CSS_SELECTOR, 'a')
+
+[links_page.get_attribute('href') for links_page in links_page]
+
+
+```
+
+
+okay we need to be a little cuter with this than I initially thought. So what we need to do is create selectors via r 
+
+/html/body/p[4]/a[1]
+```
+
+first_part = tibble(selector = paste0('/html/body/p[2]/', 'a', '[', seq(1,8,1), ']')) 
+
+
+second_part = tibble(selector = paste0('/html/body/p[4]/', 'a', '[', seq(1,5,1), ']'))
+
+
+third_part = tibble(selector = '/html/body/p[6]/a')
+
+
+all_selectors = bind_rows(first_part, second_part, third_part)
+
+write_csv(all_selectors, "selectors_for_prodi_alema.csv")
+
+
+```
+
+```{python}
+
+driver = webdriver.Chrome()
+
+
+driver.get(prodi_alema)
+
+
+```
+
+
+
+```{python}
+
+selectors = pl.read_csv('selectors_for_prodi_alema.csv')
+
+selectors_iter = selectors['selector'] 
+
+links = []
+
+
+
+
+
+for selector in selectors_iter:
+    try:
+        # Wait until the element is clickable and then click it
+        links_click = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, selector))
+        )
+        links_click.click()
+
+        # Wait for the links to be present on the page
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a'))
+        )
+        
+        # Extract links from the current page
+        links_page = driver.find_elements(By.CSS_SELECTOR, 'a')
+        links_on_page = [link.get_attribute('href') for link in links_page]
+        links.extend(links_on_page)
+
+        # Go back to the original page
+        driver.get(prodi_alema)
+    except Exception as e:
+        print(f"Error processing selector {selector}: {e}")
+
+# Close the WebDriver
+driver.quit()
+
+
+
+
+```
+
+
+```{python}
+
+prodi_alema_data = pl.DataFrame(links, schema =['url'])
+
+
+prodi_alema_data.head()
+
+prodi_alema_data.write_csv("Governo Prodi - Governo D'Alema_statements/links.csv")
+
+```
+
+
+
+
+```{python}
+
+
+president_links[13]
+
+
+prodi =  president_links[13,1]
+
+
+driver = webdriver.Firefox()
+
+driver.get(prodi)
+
+
+```
+
+
+
+```{python}
+
+get_links(driver)
+
+get_speaker(driver)
+
+get_date(driver)
+
+next_but = text_next_button(driver)
+
+next_but.click()
+
+```
+
+
+
+```{python}
+
+page = 1 
+
+links = []
+
+speaker = []
+
+date = []
+
+while page <= 46:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    speaker_page = get_speaker(driver)
+    speaker.extend(speaker_page)
+    date_page = get_date(driver)
+    date.extend(date_page)
+    page += 1
+    next_but = text_next_button(driver)
+    next_but.click()
+    time.sleep(5)
+    if page == 46:
+        links_page = get_links(driver)
+        links.extend(links_page)
+        speaker_page = get_speaker(driver)
+        speaker.extend(speaker_page)
+        date_page = get_date(driver)
+        date.extend(date_page)
+        break 
+
+
+
+
+```
+
+The original scrapper tried to go through all 191 but it looks like again we get 404 errors way before that 
+
+
+
+```{python}
+
+data_dict = {'date': date, 'speaker': speaker, 'url': links}
+
+
+prodi = pl.DataFrame(data_dict)
+
+prodi.write_csv('Governo Prodi II_statements/links.csv')
+
+
+
+
+```
+
+
+
+
+```{python}
+president_links[14]
+
+
+renzi =  president_links[14,1]
+
+driver.get(renzi)
+
+```
+
+
+
+
+```{python}
+
+get_links(driver)
+
+
+next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+next_button.click()
+
+```
+
+the we have 141 page 
+
+
+
+```{python}
+page = 1 
+
+
+links = []
+
+
+while page <= 140:
+    links_page = get_links(driver)
+    links.extend(links_page)
+    next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+    next_button.click()
+    time.sleep(5)
+    if page == 140:
+        next_button = driver.find_element(By.CSS_SELECTOR, ".pager-next > a:nth-child(1)")
+        next_button.click()
+        links_page = get_links(driver)
+        links.extend(links_page)
+        break 
+
+
+
+
+```
+
+
+```{python}
+
+last_page = get_links(driver)
+
+links.extend(last_page)
+
+
+renzi = pl.DataFrame(links)
+
+renzi.write_csv('Governo Renzi_statements/links.csv')
+
+
+
+
+```

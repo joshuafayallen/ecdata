@@ -1,0 +1,517 @@
+---
+title: "Untitled"
+format: html
+jupyter: python3
+---
+
+
+```{python}
+
+pip install polars
+pip install selenium
+pip install lxml
+
+```
+
+```{python}
+
+import polars as pl
+import time
+from selenium.webdriver.common.by import  By
+from selenium.webdriver.firefox.options import Options
+from selenium import webdriver
+from lxml import html
+
+
+base_url = 'https://www.presidencia.pt/'
+
+driver = webdriver.Firefox()
+
+
+driver.get(base_url)
+
+```
+
+
+
+```{python}
+driver = webdriver.Firefox()
+
+
+driver.get(base_url)
+
+get_noticias = driver.find_element(By.XPATH, '/html/body/main/div[2]/section/div/div/nav/ul/li[2]')
+
+
+get_noticias.click()
+
+
+get_cookies = driver.find_element(By.CLASS_NAME, 'btn-box')
+
+get_cookies.click()
+
+
+
+get_hrefs = driver.find_elements(By.CLASS_NAME, 'article-title')
+
+get_all_refs = [get_hrefs.get_attribute('href') for get_hrefs in get_hrefs]
+
+
+get_article_titles = driver.find_elements(By.CLASS_NAME, 'article-title')
+
+get_all_titles = [get_article_titles.get_attribute('textContent') for get_article_titles in get_article_titles]
+
+
+dates = driver.find_elements(By.CLASS_NAME, 'date')
+
+get_dates = [dates.get_attribute('textContent') for dates in dates]
+
+```
+
+
+Lets just go ahead and define our little functions 
+
+
+```{python}
+
+def get_links(driver):
+    refs = driver.find_elements(By.CLASS_NAME, 'article-title')
+    get_all_refs = [refs.get_attribute('href') for refs in refs]
+    return get_all_refs
+
+
+
+def get_title(driver):
+    titles = driver.find_elements(By.CLASS_NAME, 'article-title')
+    get_all_titles = [titles.get_attribute('textContent') for titles in titles]
+    return get_all_titles
+
+def get_date(driver):
+    date = driver.find_elements(By.CLASS_NAME, 'date')
+    get_all_dates = [date.get_attribute('textContent') for date in date]
+    return get_all_dates
+
+```
+
+
+
+ 
+```{python}
+
+scroll_button = driver.find_element(By.ID, 'get-more')
+
+scroll_button.click()
+
+```
+
+
+
+
+
+
+
+```{python}
+
+dates = []
+
+refs = []
+
+title = []
+
+options = Options()
+
+options.headless = True
+
+driver = webdriver.Firefox()
+
+driver.get(base_url)
+
+
+get_cookies = driver.find_element(By.CLASS_NAME, 'btn-box')
+
+get_cookies.click()
+
+get_noticias = driver.find_element(By.XPATH, '/html/body/main/div[2]/section/div/div/nav/ul/li[2]')
+
+
+get_noticias.click()
+
+first_page_links = get_links(driver)
+
+first_page_titles = get_title(driver)
+
+first_page_dates = get_date(driver)
+
+refs.extend(first_page_links)
+
+dates.extend(first_page_dates)
+
+title.extend(first_page_titles)
+
+
+first_page_down = driver.find_element(By.CLASS_NAME, 'btn-style')
+
+first_page_down.click()
+
+
+driver.maximize_window()
+
+while True:
+    scroll_button = driver.find_element(By.ID, 'get-more')
+    links_page = get_links(driver)
+    refs.extend(links_page)
+    title_page = get_title(driver)
+    title.extend(title_page)
+    dates_page = get_date(driver)
+    dates.extend(dates_page)
+    scroll_button.click()
+    new_height = driver.execute_script("return document.body.scrollHeight")
+    time.sleep(5)
+    if not scroll_button:
+        print('end of scraping process')
+        break
+
+driver.quit()
+
+
+
+
+```
+
+
+
+```{python}
+
+data_dict = {'date' : dates, 'url': refs}
+
+
+saving_data = pl.DataFrame(refs, schema =['url'])
+
+
+saving_data.write_csv('links_data.csv')
+
+dates_data = pl.DataFrame(dates, schema=['dates'])
+
+
+
+
+```
+
+
+
+
+```{r}
+pacman::p_load(rvest, tidyverse)
+
+
+links_data = read_csv("links_data.csv")
+
+
+
+links_data[[1,1]]
+
+
+test_data = read_html(links_data[[1,1]]) |>
+html_elements('.article-content p') |>
+html_text() |>
+as_tibble()
+
+test_subject = read_html(links_data[[1,1]]) |>
+html_elements('#rspeaker-content1 h1') |>
+html_text() |>
+as_tibble()
+
+
+test_date = read_html(links_data[[1,1]]) |>
+html_elements('.date') |>
+html_text()
+
+```
+
+
+
+
+```{r}
+scraping_fun = \(links, user_agent = "If you have any questions please contact Ryan Carlin at rcarlin@gsu.edu", my_timeout = 5){
+
+agent = rlang::englue('{user_agent}')
+
+intro = polite::bow(links, user_agent =  agent)
+
+
+text_data = httr::GET(links, timeout = my_timeout ) |>
+read_html() |>
+html_elements('.article-content p') |>
+html_text() |>
+as_tibble() |>
+rename(text = value)
+
+
+subject = httr::GET(links, timeout = my_timeout ) |>
+read_html() |>
+html_elements('#rspeaker-content1 h1') |>
+html_text() |>
+as_tibble() |>
+rename(subject = value)
+
+
+date =  httr::GET(links, timeout = my_timeout ) |>
+read_html() |>
+html_elements('.date') |>
+html_text() |>
+as_tibble() |>
+rename(date = value)
+
+combo_dat = bind_cols(date = date,
+                   subject = subject, 
+                   text = text_data,
+                   url = links)
+
+
+cat("Done Scraping", "links", "sleeping for 5+ seconds", "\n")
+
+Sys.sleep(sample(5:7, 1))
+
+
+
+return(combo_dat)
+
+
+}
+
+
+
+
+```
+
+
+
+```{r}
+
+test_links = links_data |>
+slice_sample(n =5) 
+
+
+
+test_fun = map(test_links$url, \(x) scraping_fun(links = x))
+
+
+
+```
+
+
+
+```{r}
+
+links_data = links_data |>
+filter(!is.na(url)) 
+
+
+pos_scrape_fun  = possibly(scraping_fun)
+
+scraped_data = map(links_data$url, \(x) pos_scrape_fun(links = x))
+
+
+
+
+
+```
+
+
+So the problem seems to be either it keeps getting hung or takes forever! 
+
+```{r}
+
+pacman::p_load(stringr, rvest, dplyr, data.table)
+
+links_data = fread("links_data.csv")
+
+
+links_de_dup = setkey(links_data, 'url') |> 
+  unique()
+ 
+links_sans_na = links_de_dup[!is.na(url),]
+
+check_years = links_de_dup[, `:=` ( year = str_extract(url, "/(\\d{4})/"),
+                                    year_fix = str_replace_all(year, '/', ""))] 
+
+
+
+
+
+table(check_years$year_fix)
+
+```
+
+
+The number of years look good now lets go and save the webpages
+
+
+
+```{r}
+
+add_file_names = links_sans_na |> 
+  tibble::as_tibble() |> 
+  mutate(file_name = str_match(url, "/\\d{4}/\\d{2}/([^/]+)/")[,2]) |> 
+  filter(!is.na(file_name))
+
+
+file_names = add_file_names$file_name
+
+file_saver = \(links, name_of_file, path = 'raw_webpages', timeout = 10){
+  
+  file_name = rlang::englue('{name_of_file}')
+  
+  page = httr::GET(links, timeout = timeout) |>
+    read_html()
+  
+  xml2::write_html(page,  here::here(path, paste0(file_name, ".html")))
+  
+  cat('Done scraping', links, "sleeping for 5 seconds")
+  
+  Sys.sleep(5)
+  return(page)
+  
+}
+
+file_saver(links = add_file_names[[1,1]], name_of_file = add_file_names[[1,2]])
+
+link = add_file_names |> 
+  pull('url')
+
+files = add_file_names |> 
+  pull('file_name')
+
+map2(link, files, \(x,y) file_saver(links = x, name_of_file = y))
+
+```
+
+
+we kind have most of them but for shenanigans lets get the rest of them 
+
+
+```{r}
+
+saved_files = list.files(here::here('raw_webpages'), pattern = "*.html", full.names = TRUE) 
+
+names_vec = basename(saved_files)
+
+
+saved_tib = data.table(file_name = names_vec) |> 
+  _[, file_name := str_remove(file_name, ".html")]
+
+file_names = saved_tib$file_name
+
+
+
+remove_dubes = setDT(add_file_names) |>
+  _[!file_name %in% file_names]
+
+link = remove_dubes |> 
+  pull('url')
+
+files = remove_dubes |> 
+  pull('file_name')
+
+purrr::map2(link, files, \(x,y) file_saver(links = x, name_of_file = y))
+
+```
+
+
+cool now that we have this in we can just read in everything and scrape 
+
+
+```{r}
+
+scraping_fun = \(links){
+
+
+
+
+text_data =   read_html(links) |>
+html_elements('.article-content p') |>
+html_text() |>
+as_tibble() |>
+rename(text = value)
+
+
+subject = read_html(links) |>
+html_elements('#rspeaker-content1 h1') |>
+html_text() |>
+as_tibble() |>
+rename(subject = value)
+
+
+date =  links |> 
+read_html() |> 
+html_elements('.date') |>
+html_text() |>
+as_tibble() |>
+rename(date = value) |> 
+slice(1)
+
+combo_dat = tibble(date = rep(date, nrow(text_data)),
+                     subject = rep(subject,nrow(text_data)), 
+                     text = text_data,
+                     url = rep(links, nrow(text_data)))
+
+
+return(combo_dat)
+
+
+}
+
+saved_files = list.files(here::here('raw_webpages'), pattern = "*.html", full.names = TRUE) 
+
+plan(multisession, workers = 6)
+
+portugal_data = future_map(saved_files, \(x) scraping_fun(links = x))
+
+
+bound_portugal = portugal_data |> 
+  list_rbind() |> 
+  mutate(file_name = basename(url),
+         file_name = str_remove(file_name, ".html")) |> 
+  unnest_longer(col = c(date:subject)) |> 
+  unpack(text) |> 
+  select(-url) |> 
+  inner_join(add_file_names, join_by(file_name))
+
+
+clean_up = bound_portugal |> 
+  mutate(subject = str_squish(subject),
+         date = dmy(date, locale = "pt_BR"))
+
+
+write_csv(clean_up, "portugal_statements.csv")
+
+```
+
+
+
+
+the combiner thinks like there are missing urls 
+
+
+
+```{r}
+library(tidyverse)
+
+
+raw_dat = read_csv('portugal_statements.csv')
+
+## ## hmm it looks like the portugal statemetns is actually clean? lets trigger a change 
+
+clean = raw_dat |>
+  rename(title = subject) |>
+  select(-file_name)
+
+head(clean)
+
+clean |>
+  filter(is.na(date))
+
+
+write_csv(clean, 'portugal_statements.csv')
+
+```
