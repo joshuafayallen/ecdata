@@ -24,7 +24,9 @@ get_ecd_release()
 
 validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
  
-  ## first lets validate the first two inputs 
+  versions = get_ecd_release()
+
+  countries = country_dictionary()
 
   if(isTRUE(is.null(country)) && full_ecd == FALSE){
 
@@ -36,16 +38,22 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
     country_type = typeof(country)
 
-    cli::cli_abort('Country should be a character vector but is {country_type}')
+    cli::cli_abort('Country should be a character vector but is {versions}')
 
 
   }
 
-  if(!version %in% get_ecd_release()){
+  if(!version %in% versions){
 
-  releases = get_ecd_release()
+  
 
    cli::cli_abort('Stop version is {version} please set it to one of {releases}')
+
+
+  }if(!country %in% countries){
+    
+    cli::cli_abort('Stop {country} is not in our dataset. Call country_dictionary() for a list of valid country names')
+
 
 
   }

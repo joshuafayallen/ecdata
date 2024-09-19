@@ -46,8 +46,7 @@ dictionary = \(){
         United Kingdom,  united_kingdom,
         United States of America,  united_states_of_america,
         Uruguay,  uruguay,
-        Venzuela,  venzuela,
-        Full, full_executive_communications_data'
+        Venzuela,  venzuela'
 
 out = utils::read.csv(
   text = country_names,
