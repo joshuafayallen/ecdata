@@ -1,6 +1,6 @@
 #' Get latest release 
-#' 
 #' keywords @internal 
+#' @noRd
 
 
 
@@ -15,12 +15,11 @@ get_ecd_release = \(){
 return(versions)
 }
 
-get_ecd_release()
 
 
 #' Validate input parameters
-#'
 #' keywords @internal 
+#' @noRd
 
 validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
  
@@ -50,7 +49,8 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
    cli::cli_abort('Stop version is {version} please set it to one of {releases}')
 
 
-  }if(!country %in% countries){
+  }
+  if(!country %in% countries){
     
     cli::cli_abort('Stop {country} is not in our dataset. Call country_dictionary() for a list of valid country names')
 

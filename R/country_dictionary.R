@@ -12,6 +12,7 @@ dictionary = \(){
         Austria,  austria,
         Azerbaijan,  azerbaijan,
         Bolivia,  bolivia,
+        Brazil, brazil,
         Canada,  canada,
         Chile,  chile,
         Colombia,  colombia,
@@ -94,3 +95,5 @@ return(out)
 #
 
 country_dictionary = dictionary()
+
+

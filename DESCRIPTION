@@ -21,12 +21,12 @@ Depends: R (>= 4.0)
 Imports: 
     arrow (>= 16.1.0),
     cli (>= 3.6.3),
-    dplyr (>= 1.0.0),
     rlang (>= 1.1.0),
-    glue  (>= 1.4.0)
-    tidyselect (>= 1.1.1),
-    utils
+    glue (>= 1.4.0),
+    utils,
+    data.table
 Suggests: 
-    data.table,
     duckplyr,
     piggyback (>= 0.1.5),
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
