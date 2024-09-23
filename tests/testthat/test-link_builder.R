@@ -7,17 +7,21 @@ test_that('checking the link building function',
   
 objs = link_builder(country = 'United States of America', ecd_version = '1.0.0')
   
-expect_equivalent(objs, 'https://github.com/joshuafayallen/executivestatements/releases/download/1.0.0/united_states_of_america.parquet')
+expect_equal(objs, 'https://github.com/joshuafayallen/executivestatements/releases/download/1.0.0/united_states_of_america.parquet')
   
   
-obs_two = link_builder(country = 'Argentina, Czechia, Turkey', ecd_version = '1.0.0')
+obs_two = link_builder(country = c('Argentina', 'Turkey', 'Czechia'), ecd_version = '1.0.0')
   
-link_vec = c('https://github.com/joshuafayallen/executivestatements/releases/download/1.0.0/turkey.parquet',
+link_vec = c('https://github.com/joshuafayallen/executivestatements/releases/download/1.0.0/argentina.parquet',
              'https://github.com/joshuafayallen/executivestatements/releases/download/1.0.0/czechia.parquet',
-            'https://github.com/joshuafayallen/executivestatements/releases/download/1.0.0/argentina.parquet')
+            'https://github.com/joshuafayallen/executivestatements/releases/download/1.0.0/turkey.parquet')
   
-expect_equivalent(obs_two, link_vec)  
+expect_equal(obs_two, link_vec)  
+ 
+this_should_fail = link_builder(country = c('USA', 'UK', 'ROK'), ecd_version = '1.0.0')
   
+  
+expect_length(this_should_fail, n = 0)
   
 
 })
