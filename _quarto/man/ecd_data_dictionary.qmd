@@ -1,0 +1,38 @@
+
+ECD data dictionary
+a data dictionary of the columns in our dataset
+
+<dl>
+<dt>col</dt><dd>please just call ecd_country_dictionary function
+</dd></dl>
+
+
+### Description
+
+ECD data dictionary
+a data dictionary of the columns in our dataset
+
+
+<dl>
+<dt>col</dt><dd>please just call ecd_country_dictionary function
+</dd></dl>
+
+
+
+### Usage
+
+<pre><code class='language-R'>ecd_data_dictionary
+</code></pre>
+
+
+### Format
+
+An object of class <code>tbl_df</code> (inherits from <code>tbl</code>, <code>data.frame</code>) with 13 rows and 2 columns.
+
+
+
+### Source
+
+The Executive Communications Dataset
+
+

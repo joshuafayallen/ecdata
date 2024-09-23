@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: ../docs/
+website:
+  title: ecdata
+  image: hex-logo.png
+  code-links: true
+  navbar:
+    search: true
+    right:
+      - icon: github
+        href: https://github.com/joshuafayallen/execstatements
+        aria-label: ecdata GitHub
+  sidebar:
+    collapse-level: 1
+    contents:
+      - text: Home
+        file: index.qmd
+      - section: Reference
+        contents:
+          - text: ecd_country_dictionary
+            file: man/ecd_country_dictionary.qmd
+          - text: ecd_data_dictionary
+            file: man/ecd_data_dictionary.qmd
+          - text: load_ecd
+            file: man/load_ecd.qmd
+      - text: License
+        file: LICENSE.md
+format:
+  html:
+    theme:
+      - flatly
+      - custom.css
+    code-link: true
+    code-copy: true
+    code-overflow: scroll

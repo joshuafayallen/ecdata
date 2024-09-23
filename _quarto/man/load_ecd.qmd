@@ -1,0 +1,35 @@
+
+Reading Executive Communications Dataset
+This function imports data from the ECD
+
+### Description
+
+Reading Executive Communications Dataset
+
+This function imports data from the ECD
+
+
+
+### Usage
+
+<pre><code class='language-R'>load_ecd(country = NULL, full_ecd = FALSE, ecd_version = "1.0.0")
+</code></pre>
+
+
+### Arguments
+
+<table>
+<tr><td style = "white-space: nowrap; font-family: monospace; vertical-align: top"><code id="country">country</code></td>
+<td>
+a character vector of country or countries in our dataset to download. for a list of valid names call <code>country_dictionary</code>
+</td></tr>
+<tr><td style = "white-space: nowrap; font-family: monospace; vertical-align: top"><code id="full_ecd">full_ecd</code></td>
+<td>
+to download the full ecd dataset set full_ecd to TRUE and don't provide an argument to the country argument
+</td></tr>
+<tr><td style = "white-space: nowrap; font-family: monospace; vertical-align: top"><code id="ecd_version">ecd_version</code></td>
+<td>
+a character of ecd versions.
+</td></tr>
+</table>
+
