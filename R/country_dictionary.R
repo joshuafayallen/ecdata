@@ -1,10 +1,8 @@
-#' internal function to print our country names
-#' 
+#' adding this is just to grab the 
+#' keywords @internal 
 #' @noRd
-#' 
 
-
-dictionary = \(){
+country_dictionary = \(){
   
   country_names = 'name_in_dataset, file_name,
         Argentina,  argentina,
@@ -65,35 +63,5 @@ for (i in 1:2) {
 return(out)
 
 }
-
-
-#' Data.frame of the names of the countries in our dataset 
-#' This is a simple helper function for the user to pass valid names 
-#' to read_communications 
-#' 
-#' @docType data
-#' @keywords datasets
-#' @name get_dictionary
-#' @format data.frame with 2 columns of character data: name_in_dataset, file_name
-#' @examples
-#' if(identical(Sys.getenv('pkgdown'), "true")){
-#'   
-#'    country_names = country_dictionary()
-#' 
-#'     head(country_names)
-#' 
-#'    #>   name_in_dataset  file_name
-#> 1       Argentina  argentina
-#> 2       Australia  australia
-#> 3         Austria    austria
-#> 4      Azerbaijan azerbaijan
-#> 5         Bolivia    bolivia
-#> 6          Canada     canada  
-#' 
-#' }
-#' @export
-#
-
-country_dictionary = dictionary()
 
 
