@@ -29,14 +29,12 @@ get_latest_files = add_country_names |>
                                  .default = country_name))
 
 
-small = get_latest_files |>
-  filter(!country_name %in% c('Brazil', 'Costa Rica')) 
 
 
 
-names_vec = small$country_name
+names_vec = get_latest_files$country_name
 
-readin_data = map(small$path, \(x) read_csv(x)) 
+readin_data = map(get_latest_files$path, \(x) read_csv(x)) 
 
 names(readin_data) = names_vec
 
@@ -44,15 +42,18 @@ bind_data = readin_data |>
   list_rbind(names_to = 'country')
 
 
+
 clean_up = bind_data |>
   mutate(title = coalesce(title, subject, statement_title),
          text = coalesce(text, texts), 
         executive = coalesce(executive, exec_one, president),
-        country = str_squish(country)) 
+        country = str_squish(country), 
+        url = coalesce(url,links),
+      file = coalesce(file, files)) 
 
 
 add_identifiers = clean_up |>
-  select(country:title, executive, type, language) |>
+  select(country:title, executive, type, language, file) |>
   mutate(isonumber = countrycode(sourcevar = country,
                                  origin = 'country.name',
                                 destination = 'iso3n'),
@@ -123,6 +124,7 @@ add_types = exec_data |>
   type %in% c('Discurso del Presidente', 'Discurso') ~ 'Speech',
   type == 'Entrevista' ~ 'Interview',
   type == 'Gov_decisions' ~ 'Government Decisions',
+  country == 'Venezuela' ~ 'News',
  .default = type),
  language = case_when(
   country %in% c('Australia', 'Azerbaijan', 'Canada', 'Jamaica',  'Nigeria', 'New Zealand', 'United Kingdom', 'United States of America', 'Russia') ~ 'English',
@@ -183,16 +185,69 @@ fix_up |>
   write_dataset('partioned-exec-data', existing_data_behavior = 'overwrite')
 
 
+## this is just for the manuscript 
+write_parquet(fix_up, '/Users/josh/Library/CloudStorage/Dropbox/EAD NSF RA Work/Paper Ideas/Scraping Dataset/technical-writeup/executive_statement_data/full_ecd.parquet')
+
+
+if(!dir.exists('piggyback-release-data')){
+  dir.create('piggyback-release-data')
+}
+
+saving_name = fix_up |>
+  mutate(saving_name = str_replace_all(country, ' ', '_'),
+         saving_name = str_squish(saving_name),
+         saving_name = str_to_lower(saving_name)) |>
+  distinct(saving_name) |>
+  pull(saving_name)
+
+
+make_splits = split(fix_up, fix_up$country)
+
+length(make_splits) == length(saving_name)
+
+
+walk2(make_splits, saving_name, \(data, name) write_parquet(data, paste0('piggyback-release-data/', paste0(name, '.parquet'))))
+
+write_parquet(fix_up, 'piggyback-release-data/full_ecd.parquet')
 
 
 
 
-piggyback::pb_release_create('joshuafayallen/executivestatements', tag = '0.0.2')
+piggyback::pb_release_create('joshuafayallen/executivestatements', tag = '1.0.0')
+
+
+
+country_files = list.files('piggyback-release-data', pattern = '*.parquet', full.names = TRUE)
+
+walk(country_files, \(x) pb_upload(x, repo ='joshuafayallen/executivestatements', tag = '1.0.0'))
 
 
 
 
+table(fix_up$country)
 
-piggyback::pb_upload('executive_statement_data/full_executive_statement_data_v2.parquet',
-'joshuafayallen/executivestatements', tag = '0.0.2')
+country_dict = fix_up |>
+  summarise(total= n(), .by = c(country, saving_name)) |>
+  mutate(lower_name = str_to_lower(country), 
+         copy_name = paste0('"', country, '"'),
+        lower_copy = paste0('"', lower_name, '"'),
+       saving_name_copy = paste0('"', saving_name, '"'),
+       copy_oveer = paste(paste0(copy_name,",") ,'',paste0(saving_name_copy, ',')))
 
+
+
+cat(country_dict$copy_oveer, sep = '\n')
+
+
+## lets benchmark nanoparquet 
+
+install.packages("nanoparquet")
+
+par_read_times = microbenchmark::microbenchmark(
+  `arrow::read_parquet` = arrow::read_parquet('executive_statement_data/full_executive_statement_data_v2.parquet'),
+  `nanoparquet::read_parquet`  = nanoparquet::read_parquet('executive_statement_data/full_executive_statement_data_v2.parquet'),
+  times = 20
+)
+
+
+autoplot(par_read_times)

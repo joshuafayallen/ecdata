@@ -1,7 +1,7 @@
 library(tidyverse)
 library(rvest)
 
-brazil_files = list.files(path = here::here("Brazil-juan"),
+brazil_files = list.files(
                           pattern = "*.csv",
                           full.names = TRUE)
 
@@ -9,111 +9,64 @@ names_vec = basename(brazil_files) |>
   str_remove('.csv') |>
   str_to_lower()
 
+# we gettting rid of brazil statementens
+names_vec = names_vec[-1]
+
+brazil_files = brazil_files[-1]
 
 read_in = map(brazil_files, read_csv)  
 
-names(read_in) = names_vec
+read_in  = map(read_in, \(x) janitor::clean_names(x))
 
 
 
 
-list2env(read_in, envir = .GlobalEnv)
+fix_date_fun = \(data){
 
-rm(brazil_statements)
+  clean = data |>
+    mutate(fix_date = dmy(date),
+           fix_date_two = mdy(date),
+           date = coalesce(fix_date, fix_date_two)) |>
+    select(-starts_with('fix'))
 
-
-roussef_links_rescrape = rousseff |>
-  filter(is.na(Date)) |>
-  distinct(URL, .keep_all = TRUE) |>
-  mutate(date = case_match( URL,
-            URL[1] ~ '17-03-2016',
-            URL[2] ~ '03-02-2016',
-            URL[3] ~ '17-09-2013',
-            URL[4] ~ '16-04-2015',
-            URL[5] ~ '16-04-2015', 
-            URL[6] ~ '21-10-2013',
-            URL[7] ~ '21-10-2013',
-            URL[8] ~ '06-09-2013',
-            URL[9] ~ '06-09-2013',
-            URL[10] ~ '24-06-2013',
-            URL[11] ~ '24-06-2013',
-            URL[12] ~ '21-06-2013',
-            URL[13] ~ '21-06-2013',
-            URL[14] ~ '18-06-2013',
-            URL[15] ~ '18-06-2013',
-            URL[16] ~ '01-05-2013',
-            URL[17] ~ '23-01-2013',
-            URL[18] ~ '13-05-2012',
-            URL[19] ~ '21-03-2011',
-            URL[20] ~ '10-02-2012',
-            URL[21] ~ '01-01-2011',
-            URL[22] ~ '01-01-2011' )) |>
-  select(URL, date2 = date)
-
-fixed_roussef = rousseff |>
-  left_join(roussef_links_rescrape, join_by(URL)) |>
-  mutate(date = coalesce(Date, date2),
-        date = dmy(date)) 
+  clean
 
 
-links_vec = fixed_roussef |>
-  filter(is.na(date)) |>
-  distinct() |>
-  pull('URL')
-
-fix_remains = fixed_roussef |>
-  mutate(date_fix = case_match(URL,
-    links_vec[1] ~ '01-03-2013',
-    links_vec[2] ~ '01-03-2013',
-    links_vec[3] ~ '01-03-2013',
-    links_vec[4]~ '01-03-2012',
-    links_vec[5] ~ '01-03-2011',
-    links_vec[6] ~  '01-03-2011'
-  ),
-date_fix = dmy(date_fix)) |>
-  select(URL, date_fix)
-
-parsed_roussef_dates = fixed_roussef |>
-  left_join(fix_remains, join_by(URL)) |>
-mutate(date = coalesce(date, date_fix)) |>
-  select(-c(date_fix, date2)) |>
-  janitor::clean_names() |>
-  select(url:type)
-
-glimpse(parsed_roussef_dates)
+}
 
 
-parsed_roussef_dates |>
-  filter(is.na(date))
+cleaned_dates = map(read_in, \(x) fix_date_fun(x))
+
+ bind_data = cleaned_dates |>
+  list_rbind(names_to = 'executive') |>
+  ## the cardosa data we can't really go back and like check it 
+   filter(president != 'Cardoso') |>
+   select(-note)
+
+## umm flagging this here but I there is a weird row with juan's name in it? 
+add_titles = bind_data |>
+  mutate(id_flag = ifelse(!is.na(file), row_number(), NA), .by = file) |>
+  mutate(fix_title = ifelse(!is.na(id_flag), str_remove_all(file, '\\d+'), NA ),
+         fix_title = str_remove_all(fix_title, '--|.pdf|---'),
+         fix_title = str_to_title(fix_title),
+        title = coalesce(title, fix_title),
+        text = coalesce(content, text),
+         executive = case_match(president,
+        'Lula' ~ 'Lula da Sillva',
+        'Rousseff' ~ 'Dilma Rousseff',
+        'Sarney' ~ 'José Sarney', 
+         'Temer' ~ 'Michel Temer')) |>
+  slice(-3482) |>
+  select(-id_flag, -fix_title, -president)
+
+redo_these = add_titles |>
+  filter(is.na(title) | nchar(title) <= 3) |>
+  write_csv('/Users/josh/Library/CloudStorage/Dropbox/EAD NSF RA Work/Scraping/Brazil-juan/add_titles_to_these.csv')
 
 
-lula_1 = lula_1 |>
- mutate(date = dmy(File)) 
 
+clean = add_titles |>
+  filter(!is.na(title) | nchar(title) > 3)
 
-extract_dates = lula_1 |>
-  filter(is.na(date)) |>
-  mutate(extract_date = str_extract_all(File, '\\d+-\\d+-\\d{4}')) |>
-  unnest(extract_date) |>
-  mutate(date_two = dmy(extract_date)) |>
-  select(File, date_two)
-
-fixed_lulas = lula_1 |>
-  left_join(extract_dates, join_by(File) ) |>
-  mutate(date = coalesce(date_two, date),
-         title = gsub('[[:digit:]]+', '', File),
-        title = str_remove_all(title, '-|--|---')) |>
-  select(-date_two) |>
-  janitor::clean_names() |>
-  select(date, text = content, title, url = file, type)
-
-
-parse_bolsonaro = bolsonaro |>
-  mutate(Date = dmy(Date)) |>
-  janitor::clean_names() 
-
-parse_cardoso = cardoso |>
-  mutate(Date = dmy(Date)) |>
-  janitor::clean_names()
-
+write_csv(clean, 'brazil_statements.csv')
 
