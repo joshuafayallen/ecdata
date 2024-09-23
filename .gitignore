@@ -18,3 +18,5 @@ raw-data/USA-Josh/explainer of presidency scraper_files/libs
 altdoc/freeze.rds
 _quarto/*
 !_quarto/_freeze/
+
+/.quarto/
