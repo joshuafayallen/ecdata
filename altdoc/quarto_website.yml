@@ -43,5 +43,9 @@ format:
       - custom.css
     code-link: true
     code-copy: true
+<<<<<<< Updated upstream
     code-overflow: scroll 
 
+=======
+    code-overflow: scroll
+>>>>>>> Stashed changes
