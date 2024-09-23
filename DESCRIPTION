@@ -24,10 +24,10 @@ Imports:
     rlang (>= 1.1.0),
     glue (>= 1.4.0),
     utils,
+    piggyback (>= 0.1.5),
     purrr
 Suggests: 
     duckplyr,
-    piggyback (>= 0.1.5),
     testthat (>= 3.0.0),
     data.table
 Config/testthat/edition: 3
