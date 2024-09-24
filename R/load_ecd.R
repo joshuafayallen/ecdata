@@ -6,6 +6,30 @@
 #' @param full_ecd to download the full ecd dataset set full_ecd to TRUE and don't provide an argument to the country argument
 #' @param ecd_version a character of ecd versions. 
 #' @importFrom purrr list_rbind
+#' 
+#' @examples
+#' \dontrun{
+#' library(ecdata)
+#' 
+#' ## load one country 
+#' 
+#' load_ecd(country = 'United States of America')
+#' 
+#' ## displays data from the USA
+#' 
+#' 
+#' ## load multiple countries 
+#' 
+#' load_ecd(country = c('Turkey', 'Republic of South Korea', 'India'))
+#'
+#' ## displays data from Turkey, South Korea, and India
+#' 
+#' # load full ecd 
+#' 
+#' 
+#' load_ecd(full_ecd = TRUE)
+#' }
+#' 
 #' @export
 #' 
 

@@ -12,3 +12,15 @@ example_scrapper(scrapper_type = c("static", "dynamic"))
 \description{
 opens and example webscraper in your texteditor
 }
+\examples{
+#'
+\dontrun{
+library(ecdata)
+
+# get dynamic scrapper
+
+example_scrapper(scrapper_type = 'static')
+
+}
+
+}

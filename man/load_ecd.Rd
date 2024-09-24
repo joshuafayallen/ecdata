@@ -20,3 +20,27 @@ Reading Executive Communications Dataset
 
 This function imports data from the ECD
 }
+\examples{
+\dontrun{
+library(ecdata)
+
+## load one country 
+
+load_ecd(country = 'United States of America')
+
+## displays data from the USA
+
+
+## load multiple countries 
+
+load_ecd(country = c('Turkey', 'Republic of South Korea', 'India'))
+
+## displays data from Turkey, South Korea, and India
+
+# load full ecd 
+
+
+load_ecd(full_ecd = TRUE)
+}
+
+}

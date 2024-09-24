@@ -7,7 +7,7 @@ Authors@R: c(
     person("Ryan", "Carlin", , 'rcarlin@gsu.edu', role = c('ctb')),
     person('Juan','Gomez-Gómez-Cruces', , , role = c('ctb')),
     person("Will", 'Horne', ,"rwhorne@clemson.edu", role = c('aut', 'ctb')),
-    person('Jamie','Lindh' , , ,role = c('ctb')),
+    person('Jamie','Lindh', , , role = c('ctb')),
     person('Cecilia','Martinez-Gallardo',  , "cmg@email.unc.edu", role = c('ctb')),
     person('Miles ','Massesy' , , , role = c('ctb')))
 Description: Imports Executive Communications Dataset.
