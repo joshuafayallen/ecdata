@@ -1,5 +1,4 @@
 developer-notes
-*.Rbuildignore
 *.venv
 *.csv
 raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/*.txt
