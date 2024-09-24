@@ -1,5 +1,5 @@
 Package: ecdata
-Title: Loads data from the Executive Communications Dataset
+Title: Loads Data From The Executive Communications Dataset
 Version: 0.0.0.9000
 Authors@R: c(
     person("Joshua", "Allen", , "joshua.f.allen@gmail.com", role = c("aut", "cre"),
@@ -10,7 +10,7 @@ Authors@R: c(
     person('Jamie','Lindh', , , role = c('ctb')),
     person('Cecilia','Martinez-Gallardo',  , "cmg@email.unc.edu", role = c('ctb')),
     person('Miles ','Massesy' , , , role = c('ctb')))
-Description: Imports Executive Communications Dataset.
+Description: Imports The Executive Communications Dataset.
 License: CC BY 4.0
 Encoding: UTF-8
 RoxygenNote: 7.3.2
@@ -23,10 +23,9 @@ Imports:
     cli (>= 3.6.3),
     rlang (>= 1.1.0),
     glue (>= 1.4.0),
-    utils,
     piggyback (>= 0.1.5),
-    purrr,
-    usethis
+    usethis,
+    vctrs (>= 0.6.5)
 Suggests: 
     duckplyr,
     testthat (>= 3.0.0),
