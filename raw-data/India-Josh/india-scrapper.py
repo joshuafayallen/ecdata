@@ -49,7 +49,7 @@ while True:
     
     try:
         WebDriverWait(driver, 10).until(
-            EC.invisibility_of_element_located((By.CSS_SELECTOR, "your-loading-icon-selector"))
+            EC.invisibility_of_element_located((By.CSS_SELECTOR, "#inifiniteLoader"))
         )
     except TimeoutException:
         print("Loading icon took too long to disappear.")
@@ -132,7 +132,6 @@ english_data = {
 
 links_vec = links['links']
 
-test_vec  = links_vec[:3]
 
 
 for link in links_vec:
@@ -193,7 +192,6 @@ links_scraped = data_one_hindi.unique(subset='url')
 links_scraped.glimpse()
 
 
-### okay it looks like 
 
 links_scraped = links_scraped['url']
 

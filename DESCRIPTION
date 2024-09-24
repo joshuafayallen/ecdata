@@ -25,7 +25,8 @@ Imports:
     glue (>= 1.4.0),
     utils,
     piggyback (>= 0.1.5),
-    purrr
+    purrr,
+    usethis
 Suggests: 
     duckplyr,
     testthat (>= 3.0.0),
