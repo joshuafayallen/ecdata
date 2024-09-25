@@ -3,7 +3,7 @@
 #' opens and example webscraper in your texteditor 
 #' 
 #' @param scrapper_type calls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use
-#' 
+#' @importFrom utils file.edit
 #' @examples 
 #' #'
 #' \dontrun{
