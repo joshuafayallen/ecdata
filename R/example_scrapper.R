@@ -44,10 +44,10 @@ arg = match.arg(scrapper_type)
   }
 
  
-  
+  file.edit(script_path)
 
-  usethis::edit_file(script_path, open = TRUE)
 
-  invisible()
+
 
 }
+
