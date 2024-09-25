@@ -4,18 +4,18 @@
     "href": "man/example_scrapper.html",
     "title": "ecdata",
     "section": "",
-    "text": "opens and example webscraper in your texteditor\n\n\n\nexample_scrapper(scrapper_type = c(\"static\", \"dynamic\"))\n\n\n\n\n\n\n\nscrapper_type\n\n\ncalls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use\n\n\n\n\n\n\n\nlibrary(\"ecdata\")\n\n#'\nlibrary(ecdata)\n\n# get dynamic scrapper\n\nexample_scrapper(scrapper_type = 'static')",
+    "text": "opens and example web scraper in your text editor\n\n\n\nexample_scrapper(scrapper_type = c(\"static\", \"dynamic\"))\n\n\n\n\n\n\n\nscrapper_type\n\n\ncalls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use\n\n\n\n\n\n\n\nlibrary(\"ecdata\")\n\n#'\nlibrary(ecdata)\n\n# get dynamic scrapper\n\nexample_scrapper(scrapper_type = 'static')",
     "crumbs": [
       "Reference",
       "`example_scrapper`"
     ]
   },
   {
-    "objectID": "man/example_scrapper.html#this-is-a-helper-function-to-help-you-the-scrape-the-web",
-    "href": "man/example_scrapper.html#this-is-a-helper-function-to-help-you-the-scrape-the-web",
+    "objectID": "man/example_scrapper.html#this-is-a-helper-function-to-help-you-scrape-the-web",
+    "href": "man/example_scrapper.html#this-is-a-helper-function-to-help-you-scrape-the-web",
     "title": "ecdata",
     "section": "",
-    "text": "opens and example webscraper in your texteditor\n\n\n\nexample_scrapper(scrapper_type = c(\"static\", \"dynamic\"))\n\n\n\n\n\n\n\nscrapper_type\n\n\ncalls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use\n\n\n\n\n\n\n\nlibrary(\"ecdata\")\n\n#'\nlibrary(ecdata)\n\n# get dynamic scrapper\n\nexample_scrapper(scrapper_type = 'static')",
+    "text": "opens and example web scraper in your text editor\n\n\n\nexample_scrapper(scrapper_type = c(\"static\", \"dynamic\"))\n\n\n\n\n\n\n\nscrapper_type\n\n\ncalls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use\n\n\n\n\n\n\n\nlibrary(\"ecdata\")\n\n#'\nlibrary(ecdata)\n\n# get dynamic scrapper\n\nexample_scrapper(scrapper_type = 'static')",
     "crumbs": [
       "Reference",
       "`example_scrapper`"
@@ -26,7 +26,7 @@
     "href": "man/load_ecd.html",
     "title": "ecdata",
     "section": "",
-    "text": "Reading Executive Communications Dataset This function imports data from the ECD\n\nDescription\nReading Executive Communications Dataset\nThis function imports data from the ECD\n\n\nUsage\nload_ecd(country = NULL, full_ecd = FALSE, ecd_version = \"1.0.0\")\n\n\n\nArguments\n\n\n\ncountry\n\n\na character vector of country or countries in our dataset to download. for a list of valid names call country_dictionary\n\n\n\n\nfull_ecd\n\n\nto download the full ecd dataset set full_ecd to TRUE and don’t provide an argument to the country argument\n\n\n\n\necd_version\n\n\na character of ecd versions.\n\n\n\n\n\nExamples\n\nlibrary(\"ecdata\")\n\nlibrary(ecdata)\n\n## load one country \n\nload_ecd(country = 'United States of America')\n\n## displays data from the USA\n\n\n## load multiple countries \n\nload_ecd(country = c('Turkey', 'Republic of South Korea', 'India'))\n\n## displays data from Turkey, South Korea, and India\n\n# load full ecd \n\n\nload_ecd(full_ecd = TRUE)",
+    "text": "Reading Executive Communications Dataset This function imports data from the ECD\n\nDescription\nReading Executive Communications Dataset\nThis function imports data from the ECD\n\n\nUsage\nload_ecd(country = NULL, full_ecd = FALSE, ecd_version = \"1.0.0\")\n\n\n\nArguments\n\n\n\ncountry\n\n\na character vector of country or countries in our dataset to download. For a list of valid names, call country_dictionary\n\n\n\n\nfull_ecd\n\n\nto download the full Executive Communications Dataset set full_ecd to TRUE and don’t provide an argument to the country argument\n\n\n\n\necd_version\n\n\na character of ecd versions.\n\n\n\n\n\nExamples\n\nlibrary(\"ecdata\")\n\nlibrary(ecdata)\n\n## load one country \n\nload_ecd(country = 'United States of America')\n\n## displays data from the USA\n\n\n## load multiple countries \n\nload_ecd(country = c('Turkey', 'Republic of South Korea', 'India'))\n\n## displays data from Turkey, South Korea, and India\n\n# load full ecd \n\n\nload_ecd(full_ecd = TRUE)",
     "crumbs": [
       "Reference",
       "`load_ecd`"
