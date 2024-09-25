@@ -2,8 +2,8 @@
 #'  
 #' This function imports data from the ECD 
 #'  
-#' @param country a character vector of country or countries in our dataset to download. for a list of valid names call `country_dictionary` 
-#' @param full_ecd to download the full ecd dataset set full_ecd to TRUE and don't provide an argument to the country argument
+#' @param country a character vector of country or countries in our dataset to download. For a list of valid names, call `country_dictionary` 
+#' @param full_ecd to download the full Executive Communications Dataset set full_ecd to TRUE and don't provide an argument to the country argument
 #' @param ecd_version a character of ecd versions. 
 #' @importFrom vctrs list_unchop
 #' 

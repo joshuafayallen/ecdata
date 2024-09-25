@@ -1,6 +1,6 @@
-#' This is a helper function to help you the scrape the web
+#' This is a helper function to help you scrape the web
 #' 
-#' opens and example webscraper in your texteditor 
+#' opens and example web scraper in your text editor 
 #' 
 #' @param scrapper_type calls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use
 #' @importFrom utils file.edit

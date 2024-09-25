@@ -2,7 +2,7 @@
 % Please edit documentation in R/example_scrapper.R
 \name{example_scrapper}
 \alias{example_scrapper}
-\title{This is a helper function to help you the scrape the web}
+\title{This is a helper function to help you scrape the web}
 \usage{
 example_scrapper(scrapper_type = c("static", "dynamic"))
 }
@@ -10,7 +10,7 @@ example_scrapper(scrapper_type = c("static", "dynamic"))
 \item{scrapper_type}{calls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use}
 }
 \description{
-opens and example webscraper in your texteditor
+opens and example web scraper in your text editor
 }
 \examples{
 #'

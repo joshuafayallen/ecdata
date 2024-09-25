@@ -9,9 +9,9 @@ This function imports data from the ECD}
 load_ecd(country = NULL, full_ecd = FALSE, ecd_version = "1.0.0")
 }
 \arguments{
-\item{country}{a character vector of country or countries in our dataset to download. for a list of valid names call \code{country_dictionary}}
+\item{country}{a character vector of country or countries in our dataset to download. For a list of valid names, call \code{country_dictionary}}
 
-\item{full_ecd}{to download the full ecd dataset set full_ecd to TRUE and don't provide an argument to the country argument}
+\item{full_ecd}{to download the full Executive Communications Dataset set full_ecd to TRUE and don't provide an argument to the country argument}
 
 \item{ecd_version}{a character of ecd versions.}
 }
