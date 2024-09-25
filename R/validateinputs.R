@@ -27,6 +27,12 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
   countries = country_dictionary()$name_in_dataset
 
+  arrow_check = rlang::is_installed(pkg = 'arrow')
+
+  parquet_check = arrow::arrow_info()$capabilities[4]
+
+
+
   if(isTRUE(is.null(country)) && full_ecd == FALSE){
 
    cli::cli_abort('Please provide a country name or set full_ecd to TRUE')
@@ -54,6 +60,18 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
     cli::cli_abort('Stop {country} is not in our dataset. Call country_names() for a list of valid country names')
 
 
+
+  }
+
+  if(!isTRUE(arrow_check)){
+
+    cli::cli_abort("Arrow is not installed please install arrow")
+
+  }
+
+  if(!isTRUE(arrow_check) && Sys.info()['sysname'] == 'Darwin'){
+
+   cli::cli_abort('Parquet support was not detected and it looks like you are on a Mac. This is usually resolved by installing the development version of arrow. Please run \n install.packages("arrow", repos = "https://apache.r-universe.dev") ')
 
   }
 
