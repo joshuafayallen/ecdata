@@ -6,7 +6,7 @@
     "section": "",
     "text": "opens and example web scraper in your text editor\n\n\n\nexample_scrapper(scrapper_type = c(\"static\", \"dynamic\"))\n\n\n\n\n\n\n\nscrapper_type\n\n\ncalls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use\n\n\n\n\n\n\n\nlibrary(\"ecdata\")\n\n#'\nlibrary(ecdata)\n\n# get dynamic scrapper\n\nexample_scrapper(scrapper_type = 'static')",
     "crumbs": [
-      "Reference",
+      "Functions",
       "`example_scrapper`"
     ]
   },
@@ -17,7 +17,7 @@
     "section": "",
     "text": "opens and example web scraper in your text editor\n\n\n\nexample_scrapper(scrapper_type = c(\"static\", \"dynamic\"))\n\n\n\n\n\n\n\nscrapper_type\n\n\ncalls the example scrapper scripts. Should be one of static or dynamic which matches the kind of scrapper you want to use\n\n\n\n\n\n\n\nlibrary(\"ecdata\")\n\n#'\nlibrary(ecdata)\n\n# get dynamic scrapper\n\nexample_scrapper(scrapper_type = 'static')",
     "crumbs": [
-      "Reference",
+      "Functions",
       "`example_scrapper`"
     ]
   },
@@ -28,7 +28,7 @@
     "section": "",
     "text": "Reading Executive Communications Dataset This function imports data from the ECD\n\nDescription\nReading Executive Communications Dataset\nThis function imports data from the ECD\n\n\nUsage\nload_ecd(country = NULL, full_ecd = FALSE, ecd_version = \"1.0.0\")\n\n\n\nArguments\n\n\n\ncountry\n\n\na character vector of country or countries in our dataset to download. For a list of valid names, call country_dictionary\n\n\n\n\nfull_ecd\n\n\nto download the full Executive Communications Dataset set full_ecd to TRUE and don’t provide an argument to the country argument\n\n\n\n\necd_version\n\n\na character of ecd versions.\n\n\n\n\n\nExamples\n\nlibrary(\"ecdata\")\n\nlibrary(ecdata)\n\n## load one country \n\nload_ecd(country = 'United States of America')\n\n## displays data from the USA\n\n\n## load multiple countries \n\nload_ecd(country = c('Turkey', 'Republic of South Korea', 'India'))\n\n## displays data from Turkey, South Korea, and India\n\n# load full ecd \n\n\nload_ecd(full_ecd = TRUE)",
     "crumbs": [
-      "Reference",
+      "Functions",
       "`load_ecd`"
     ]
   },
@@ -49,7 +49,7 @@
     "section": "",
     "text": "ECD country dictionary A data dictionary with the countries in our dataset and their corresponding file names on Github\n\nDescription\nECD country dictionary A data dictionary with the countries in our dataset and their corresponding file names on Github\n\n\nUsage\necd_country_dictionary\n\n\n\nFormat\n\necd_country_dictionary\n\na data frame with 41 rows and 2 columns\n\n\nname_in_dataset\n\n\nName of the country in the dataset\n\n\nfile_name\n\n\nName of the parquet files on GitHub\n\n\n\n\nSource\nThe Executive Communications Dataset",
     "crumbs": [
-      "Reference",
+      "Functions",
       "`ecd_country_dictionary`"
     ]
   },
@@ -60,7 +60,7 @@
     "section": "",
     "text": "ECD data dictionary a data dictionary of the columns in our dataset\n\n\ncol\n\n\nplease just call ecd_country_dictionary function\n\n\n\nDescription\nECD data dictionary a data dictionary of the columns in our dataset\n\n\ncol\n\n\nplease just call ecd_country_dictionary function\n\n\n\n\nUsage\necd_data_dictionary\n\n\n\nFormat\nAn object of class tbl_df (inherits from tbl, data.frame) with 13 rows and 2 columns.\n\n\nSource\nThe Executive Communications Dataset",
     "crumbs": [
-      "Reference",
+      "Functions",
       "`ecd_data_dictionary`"
     ]
   }

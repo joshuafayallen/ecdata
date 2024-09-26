@@ -21,7 +21,7 @@ website:
     contents:
       - text: Home
         file: index.qmd
-      - section: "Reference"
+      - section: "Functions"
         contents:
         - text: "`load_ecd`"
           file: man/load_ecd.qmd
