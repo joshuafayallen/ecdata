@@ -1,11 +1,12 @@
----
-format: gfm
----
+<p align="center">
+<a href="https://joshuafayallen.github.io/executivestatements">
+<img src="hex-logo.png" height = "350" class = "center"> </a>
+</p>
 
 ```{r}
 #| echo: false
 #| fig-align: center
-#| out.width: "80%"
+#| out.width: "60%"
 
 knitr::include_graphics('hex-logo.png')
 
