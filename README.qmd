@@ -2,17 +2,12 @@
 format: gfm
 ---
 
-```{r}
-#| echo: false
-#| fig-align: center
-#| out.width: "80%"
 
-knitr::include_graphics('hex-logo.png')
-
-```
+![](hex-logo.png){fig-align="center"}
 
 
-`ecdata` is a minimal package for downloading *Executive Communications Dataset*. It includes subsets of all the country data, the full dataset, data dictionaries, and a sample script to help users expand the dataset. For our full replication archive, see the relevant subdirectories in [our GitHub](https://github.com/joshuafayallen/executivestatements/tree/main/raw-data). Stay tuned for a `python` implementation. 
+
+`ecdata` is a minimal package for downloading *Executive Communications Dataset*. It includes subsets of all the country data, the full dataset, data dictionaries, and a sample script to help users expand the dataset. For our full replication archive, see the relevant subdirectories in [our GitHub](https://github.com/joshuafayallen/executivestatements/tree/main/raw-data). For a Python implementation see [execcommunications-py](https://github.com/joshuafayallen/executivecommunications-py). 
 
 ## Installation 
 

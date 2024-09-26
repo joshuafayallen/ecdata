@@ -55,9 +55,9 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
 
   }
-  if(!country %in% countries){
+  if(all(!country %in% countries)){
     
-    cli::cli_abort('Stop {country} is not in our dataset. Call country_names() for a list of valid country names')
+    cli::cli_alert_warning('Stop {country[!country %in% countries]} is not in our dataset. Call country_names() for a list of valid country names')
 
 
 
