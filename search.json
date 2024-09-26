@@ -43,36 +43,6 @@
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "ecdata",
-    "section": "",
-    "text": "ecdata is a minimal package for downloading Executive Communications Dataset. It includes subsets of all the country data, the full dataset, data dictionaries, and a sample script to help users expand the dataset. For a full replication archives see the relevant subdirectories in our github. Stay tuned for a python implementation.",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#installation",
-    "href": "index.html#installation",
-    "title": "ecdata",
-    "section": "Installation",
-    "text": "Installation\nTo install ecdata run.\n\npak::pkg_install('joshuafayallen/executivestatements')",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#usage",
-    "href": "index.html#usage",
-    "title": "ecdata",
-    "section": "Usage",
-    "text": "Usage\nTo see a list of countries in our dataset and the associated file name in the github release you can run:\n\nlibrary(ecdata)\n\necd_country_dictionary |&gt;\n    head()\n\n  name_in_dataset  file_name\n1       Argentina  argentina\n2       Australia  australia\n3         Austria    austria\n4      Azerbaijan azerbaijan\n5         Bolivia    bolivia\n6          Brazil     brazil\n\n\nTo load a specific country’s or countries’ data you can use the load_ecd function like this.\n\nload_ecd(country = 'United States of America') |&gt;\n    head()\n\n\nload_ecd(country = c('United States of America', 'Turkey', 'Republic of South Korea')) |&gt;\n    tail()",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
     "objectID": "man/ecd_country_dictionary.html",
     "href": "man/ecd_country_dictionary.html",
     "title": "ecdata",
