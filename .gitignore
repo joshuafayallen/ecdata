@@ -3,7 +3,6 @@ developer-notes
 *.csv
 raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/*.txt
 *.pdf
-*.png
 *.Rproj
 *.Rproj.user
 *.html
@@ -11,6 +10,8 @@ raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/*.txt
 raw-data/upload-to-the-duck
 *.vdoc.py
 *.vdoc.r
+raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/direttiva_03052012.png
+raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_images
 raw-data/USA-Josh/explainer of presidency scraper_files/libs
 .Rproj.user
 *.parquet
