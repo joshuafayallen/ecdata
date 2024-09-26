@@ -1,6 +1,6 @@
 
 
-<img src="hex-logo.png" data-fig-align="center" />
+<img src="hex-logo.png" style="width:80.0%" data-fig-align="center" />
 
 `ecdata` is a minimal package for downloading *Executive Communications
 Dataset*. It includes subsets of all the country data, the full dataset,
