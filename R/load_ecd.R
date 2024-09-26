@@ -70,10 +70,12 @@ load_ecd = \(country = NULL, full_ecd = FALSE, ecd_version = '1.0.0'){
 
       links_to_read = link_builder(country = country, ecd_version = ecd_version)
 
+
       ecd_data = lapply(links_to_read, \(x) arrow::read_parquet(x))
 
       ecd_data = ecd_data |>
         list_unchop()
+
 
       if(nrow(ecd_data) != 0){
         cli::cli_alert_success('Successfully downloaded data for {country}')

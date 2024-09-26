@@ -33,7 +33,6 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
   invalid_countries = all(!country %in% countries)
   
-  which_ones = country[!countries %in% countries]
 
 
   if(isTRUE(is.null(country)) && full_ecd == FALSE){
@@ -58,9 +57,9 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
 
   }
-  if(length(invalid_countries) >0){
+  if(length(invalid_countries) > 0){
 
-    cli::cli_alert_warning('Warning one of {country} is not in our dataset. Call country_names() for a list of valid country names')
+    cli::cli_abort('One of {country} is not in our dataset. Call country_names() for a list of valid country names')
 
 
 
