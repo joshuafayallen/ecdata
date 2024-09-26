@@ -5,8 +5,6 @@
 <img src="hex-logo.png" height = "350" class = "center"> </a>
 </p>
 
-<img src="hex-logo.png" style="width:60.0%" data-fig-align="center" />
-
 `ecdata` is a minimal package for downloading *Executive Communications
 Dataset*. It includes subsets of all the country data, the full dataset,
 data dictionaries, and a sample script to help users expand the dataset.
