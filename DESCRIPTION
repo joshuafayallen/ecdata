@@ -9,7 +9,7 @@ Authors@R: c(
     person("Will", 'Horne', ,"rwhorne@clemson.edu", role = c('aut', 'ctb')),
     person('Jamie','Lindh', , "jlindh@unc.edu" ,role = c('ctb')),
     person('Cecilia','Martinez-Gallardo',  , "cmg@email.unc.edu", role = c('ctb')),
-    person('Miles','Massesy', role = c('ctb')))
+    person('Miles','Massesy', , 'milesmcma@gmail.com' ,role = c('ctb')))
 Description: Imports The Executive Communications Dataset.
 License: CC BY 4.0
 Encoding: UTF-8
