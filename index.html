@@ -246,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p align="center">
-<a href="https://joshuafayallen.github.io/executivestatements"> <img src="hex-logo.png" height="350" class="center"> </a>
+<a href="https://joshuafayallen.github.io/executivestatements/"> <img src="hex-logo.png" height="350" class="center"> </a>
 </p>
 <p><code>ecdata</code> is a minimal package for downloading <em>Executive Communications Dataset</em>. It includes subsets of all the country data, the full dataset, data dictionaries, and a sample script to help users expand the dataset. For our full replication archive, see the relevant subdirectories in <a href="https://github.com/joshuafayallen/executivestatements/tree/main/raw-data">our GitHub</a>. For a Python implementation see <a href="https://github.com/joshuafayallen/executivecommunications-py">execcommunications-py</a>.</p>
 <section id="installation" class="level2">
@@ -277,10 +277,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>To load a specific country’s or countries’ data, you can use the <code>load_ecd</code> function like this.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load_ecd</span>(<span class="at">country =</span> <span class="st">'United States of America'</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>()</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">load_ecd</span>(<span class="at">country =</span> <span class="fu">c</span>(<span class="st">'United States of America'</span>, <span class="st">'Turkey'</span>, <span class="st">'Republic of South Korea'</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tail</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   country
+1 United States of America
+2 United States of America
+                                                                                          url
+1 https://www.presidency.ucsb.edu/documents/remarks-luncheon-for-the-us-olympic-medal-winners
+2 https://www.presidency.ucsb.edu/documents/remarks-luncheon-for-the-us-olympic-medal-winners
+                                                                                                                                                                     text
+1                                                                                                                                                            About&nbsp;Search
+2 I hope you are understanding people. I appreciate your patience and ask for your forgiveness. I would like to introduce to you a few of our distinguished guests today.
+        date title         executive   type language file isonumber gwc
+1 1964-12-01  &lt;NA&gt; Lyndon B. Johnson Speech  English &lt;NA&gt;       840 USA
+2 1964-12-01  &lt;NA&gt; Lyndon B. Johnson Speech  English &lt;NA&gt;       840 USA
+  cowcodes polity_v polity_iv vdem year_of_statement
+1      USA      USA       USA   20              1964
+2      USA      USA       USA   20              1964</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load_ecd</span>(<span class="at">country =</span> <span class="fu">c</span>(<span class="st">'United States of America'</span>, <span class="st">'Turkey'</span>, <span class="st">'Republic of South Korea'</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tail</span>(<span class="at">n =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ Successfully downloaded data for United States of America, Turkey, and Republic of South Korea</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        country
+330255 United States of America
+330256 United States of America
+                                                                                                     url
+330255 https://www.presidency.ucsb.edu/documents/proclamation-10627-national-voter-registration-day-2023
+330256 https://www.presidency.ucsb.edu/documents/proclamation-10627-national-voter-registration-day-2023
+                                                                                        text
+330255                                                                      Twitter Facebook
+330256 Copyright © The American Presidency ProjectTerms of Service | Privacy | Accessibility
+             date title       executive                     type language file
+330255 2023-09-18  &lt;NA&gt; Joseph R. Biden Presidential Proclamtion  English &lt;NA&gt;
+330256 2023-09-18  &lt;NA&gt; Joseph R. Biden Presidential Proclamtion  English &lt;NA&gt;
+       isonumber gwc cowcodes polity_v polity_iv vdem year_of_statement
+330255       840 USA      USA      USA       USA   20              2023
+330256       840 USA      USA      USA       USA   20              2023</code></pre>
+</div>
+</div>
+<p>We also provide a set of an example scrappers in part to quickly summarize our replication files and for other researchers to either collect more recent data or expand the cases in our dataset. To call these scrappers simply run:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># static website scrapper</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">example_scrapper</span>(<span class="at">scrapper_type =</span> <span class="st">'static'</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># dynamic website scrapper </span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">example_scrapper</span>(<span class="at">scrapper_type =</span> <span class="st">'dynamic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
