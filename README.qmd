@@ -1,6 +1,6 @@
 
 <p align="center">
-<a href="https://joshuafayallen.github.io/executivestatements">
+<a href="https://joshuafayallen.github.io/executivestatements/">
 <img src="hex-logo.png" height = "350" class = "center"> </a>
 </p>
 
