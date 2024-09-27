@@ -12,3 +12,5 @@
 ^README\.qmd$
 ^README\.md$
 ^revdep$
+^README_files$
+^README.html$
