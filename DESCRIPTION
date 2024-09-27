@@ -32,3 +32,5 @@ Suggests:
     data.table,
     altdoc
 Config/testthat/edition: 3
+Remotes:
+    etiennebacher/altdoc
