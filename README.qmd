@@ -37,13 +37,27 @@ ecd_country_dictionary |>
 To load a specific country's or countries' data, you can use the `load_ecd` function like this. 
 
 ```{r}
-#| eval: false
+
 load_ecd(country = 'United States of America') |>
-    head()
+    head(n = 2)
 
 load_ecd(country = c('United States of America', 'Turkey', 'Republic of South Korea')) |>
-    tail()
+    tail(n = 2)
 
 ```
 
+
+We also provide a set of an example scrappers in part to quickly summarize our replication files and for other researchers to either collect more recent data or expand the cases in our dataset. To call these scrappers simply run:
+
+```{r}
+#| eval: false
+
+# static website scrapper
+example_scrapper(scrapper_type = 'static')
+
+# dynamic website scrapper 
+
+example_scrapper(scrapper_type = 'dynamic')
+
+```
 
