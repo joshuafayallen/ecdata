@@ -112,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
 <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/joshuafayallen/executivestatements"> <i class="bi bi-github" role="img" aria-label="ecdata GitHub">
+    <a class="nav-link" href="https://github.com/joshuafayallen/ecdata"> <i class="bi bi-github" role="img" aria-label="ecdata GitHub">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -170,41 +170,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../man/load_ecd.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><code>load_ecd</code></span></a>
-  </div>
-</li>
-      </ul>
-</li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
- <span class="menu-text">Reference</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">
-<li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/ecd_country_dictionary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">ecd_country_dictionary</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/ecd_data_dictionary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">ecd_data_dictionary</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/example_scrapper.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">example_scrapper</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/load_ecd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">load_ecd</span></a>
   </div>
 </li>
       </ul>
@@ -342,7 +307,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/joshuafayallen\.github\.io\/executivestatements\/");
+      var filterRegex = new RegExp('/' + window.location.host + '/');
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
