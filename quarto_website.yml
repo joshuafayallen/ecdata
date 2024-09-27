@@ -8,7 +8,6 @@ project:
 
 website:
   title: "$ALTDOC_PACKAGE_NAME"
-  image: 'hex-logo.png'
   code-links: true
   navbar:
     search: true
@@ -21,28 +20,33 @@ website:
     contents:
       - text: Home
         file: index.qmd
-      - section: "Functions"
+      - section: Functions
         contents:
-        - text: "`load_ecd`"
-          file: man/load_ecd.qmd
-        - text: "`ecd_country_dictionary`"
-          file: man/ecd_country_dictionary.qmd
-        - text: "`ecd_data_dictionary`"
-          file: man/ecd_data_dictionary.qmd 
-        - text: "`example_scrapper`"
-          file: man/example_scrapper.qmd
-      - $ALTDOC_NEWS
-      - $ALTDOC_CHANGELOG
-      - $ALTDOC_LICENSE
-      - $ALTDOC_LICENCE
-      - $ALTDOC_CODE_OF_CONDUCT
-      - $ALTDOC_CITATION
+         - text: "`ecd_country_dictionary`"
+           file: man/ecd_country_dictionary.qmd
+         - text: "`ecd_data_dictionary`"
+           file: man/ecd_data_dictionary.qmd
+         - text: "`example_scrapper`"
+           file: man/example_scrapper.qmd
+         - text: "`load_ecd`"
+           file: man/load_ecd.qmd
+
+      - section: $ALTDOC_MAN_BLOCK
+      - text: News
+        file: $ALTDOC_NEWS
+      - text: Changelog
+        file: $ALTDOC_CHANGELOG
+      - text: License
+        file: $ALTDOC_LICENSE
+      - text: Licence
+        file: $ALTDOC_LICENCE
+      - text: Code of conduct
+        file: $ALTDOC_CODE_OF_CONDUCT
+      - text: Citation
+        file: $ALTDOC_CITATION
+
 format:
   html:
-    theme: 
-      - flatly
-      - custom.css
     code-link: true
-    code-copy: true
-    code-overflow: scroll 
-
+#     theme: cosmo
+#     number-sections: false
