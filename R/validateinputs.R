@@ -57,7 +57,7 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
 
   }
-  if(!isTRUE(invalid_countries)){
+  if(invalid_countries == FALSE){
 
     countries = country_dictionary()$name_in_dataset
 
