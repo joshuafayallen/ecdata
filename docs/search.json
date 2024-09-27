@@ -14,7 +14,7 @@
     "href": "index.html#installation",
     "title": "ecdata",
     "section": "Installation",
-    "text": "Installation\nTo install ecdata run.\n\npak::pkg_install('joshuafayallen/executivestatements')",
+    "text": "Installation\nTo install ecdata run.\n\npak::pkg_install('joshuafayallen/ecdata')",
     "crumbs": [
       "Home"
     ]

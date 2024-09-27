@@ -19,7 +19,7 @@ For a Python implementation see
 To install `ecdata` run.
 
 ``` r
-pak::pkg_install('joshuafayallen/executivestatements')
+pak::pkg_install('joshuafayallen/ecdata')
 ```
 
 ## Usage

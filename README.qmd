@@ -17,7 +17,7 @@ To install `ecdata` run.
 #| results: hide 
 #| eval: false
 
-pak::pkg_install('joshuafayallen/executivestatements')
+pak::pkg_install('joshuafayallen/ecdata')
 
 ```
 
