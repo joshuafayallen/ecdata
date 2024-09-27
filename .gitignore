@@ -5,8 +5,11 @@ raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/*.txt
 *.pdf
 *.Rproj
 *.Rproj.user
-*.html
 *.DS_Store
+raw-data/Venzuela-Josh/webpages
+raw-data/Israel-copy/webpages
+raw-data/Portugal-Josh/President/news/raw_webpages
+raw-data/Venzuela-Josh/test_Data.html
 raw-data/upload-to-the-duck
 *.vdoc.py
 *.vdoc.r
