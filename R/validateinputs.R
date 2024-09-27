@@ -31,7 +31,7 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
   parquet_check = arrow::arrow_info()$capabilities[4]
 
-  invalid_countries = any(!country %in% countries)
+  invalid_countries = any(country %in% countries)
   
 
 
