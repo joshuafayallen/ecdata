@@ -63,7 +63,7 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
     countries_not_in_dataset = setdiff(country, countries)
 
-    cli::cli_abort('One of {countries_not_in_dataset} is not in our dataset. Call country_names() for a list of valid country names')
+    cli::cli_abort('One of {countries_not_in_dataset} is not in our dataset. Call ecd_country_dictionary() for a list of valid country names')
 
 
 
