@@ -45,10 +45,12 @@ website:
 
 format:
   html:
-    code-link: true
-    
-    theme: 
+    toc: true
+    theme:
       - flatly
       - custom.scss
+    code-link: true
+    code-copy: true
+    code-overflow: scroll
 
 #     number-sections: false
