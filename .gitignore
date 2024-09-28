@@ -23,3 +23,4 @@ _quarto/*
 !_quarto/_freeze/
 
 /.quarto/
+^_quarto$
