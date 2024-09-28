@@ -45,6 +45,12 @@ website:
 
 format:
   html:
+    toc: true
+    theme:
+      - flatly
+      - custom.scss
     code-link: true
-#     theme: cosmo
+    code-copy: true
+    code-overflow: scroll
+
 #     number-sections: false
