@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>load_ecd – ecdata</title>
 <style>
@@ -185,8 +185,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="undefined"><i class="bi bi-link-45deg"></i></a></li></ul></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
+  <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="undefined"><i class="bi bi-link-45deg"></i></a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><p>Reading Executive Communications Dataset This function imports data from the ECD</p>
 <section id="description" class="level3"><h3 class="anchored" data-anchor-id="description">Description</h3>
@@ -223,27 +230,27 @@ a character of ecd versions.
 </tr>
 </tbody></table></section><section id="examples" class="level3"><h3 class="anchored" data-anchor-id="examples">Examples</h3>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"ecdata"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ecdata</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ecdata</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## load one country </span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ecdata/man/load_ecd.html">load_ecd</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">'United States of America'</span><span class="op">)</span></span>
+<span><span class="fu">load_ecd</span><span class="op">(</span>country <span class="op">=</span> <span class="st">'United States of America'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## displays data from the USA</span></span>
 <span></span>
 <span></span>
 <span><span class="co">## load multiple countries </span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ecdata/man/load_ecd.html">load_ecd</a></span><span class="op">(</span>country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Turkey'</span>, <span class="st">'Republic of South Korea'</span>, <span class="st">'India'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">load_ecd</span><span class="op">(</span>country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Turkey'</span>, <span class="st">'Republic of South Korea'</span>, <span class="st">'India'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## displays data from Turkey, South Korea, and India</span></span>
 <span></span>
 <span><span class="co"># load full ecd </span></span>
 <span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ecdata/man/load_ecd.html">load_ecd</a></span><span class="op">(</span>full_ecd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">load_ecd</span><span class="op">(</span>full_ecd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
