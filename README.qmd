@@ -1,6 +1,6 @@
 
 <p align="center">
-<a href="https://joshuafayallen.github.io/executivestatements/">
+<a href="https://joshuafayallen.github.io/ecdata/">
 <img src="hex-logo.png" height = "350" class = "center"> </a>
 </p>
 
@@ -10,6 +10,10 @@
 ## Installation 
 
 To install `ecdata` run.
+
+:::panel-tabset
+
+## R
 
 ```{r}
 #| warning: false
@@ -21,9 +25,24 @@ pak::pkg_install('joshuafayallen/ecdata')
 
 ```
 
+## Python
+
+```
+
+(uv) pip install git+https://github.com/joshuafayallen/executivecommunications-py
+
+```
+
+:::
+
+
 ## Usage 
 
 To see a list of countries in our dataset and the associated file name in the GitHub release, you can run: 
+
+:::panel-tabset
+
+## R 
 
 ```{r}
 
@@ -34,17 +53,46 @@ ecd_country_dictionary |>
 
 ```
 
-To load a specific country's or countries' data, you can use the `load_ecd` function like this. 
+## Python
+
+```{python}
+import ecdata as ec
+import polars as pl 
+
+ec.ecd_country_dictionary().head(int = 2)
+
+
+```
+
+:::
+
+
+## Loading the Executive Communications Dataset
+
+We offer variety of options to load the ECD. You can specify single countries 
+
+
+:::panel-tabset
+
+## R
 
 ```{r}
 
 load_ecd(country = 'United States of America') |>
     head(n = 2)
 
-load_ecd(country = c('United States of America', 'Turkey', 'Republic of South Korea')) |>
-    tail(n = 2)
 
 ```
+
+## Python
+
+```{python}
+
+ec.load_ecd(country = 'United States of America').head(int = 2)
+
+```
+
+:::
 
 
 We also provide a set of an example scrappers in part to quickly summarize our replication files and for other researchers to either collect more recent data or expand the cases in our dataset. To call these scrappers simply run:
