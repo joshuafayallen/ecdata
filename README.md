@@ -18,14 +18,23 @@ For a Python implementation see
 
 To install `ecdata` run.
 
+## R
+
 ``` r
 pak::pkg_install('joshuafayallen/ecdata')
 ```
+
+## Python
+
+
+    (uv) pip install git+https://github.com/joshuafayallen/executivecommunications-py
 
 ## Usage
 
 To see a list of countries in our dataset and the associated file name
 in the GitHub release, you can run:
+
+## R
 
 ``` r
 library(ecdata)
@@ -42,8 +51,21 @@ ecd_country_dictionary |>
     5         Bolivia    bolivia
     6          Brazil     brazil
 
-To load a specific country’s or countries’ data, you can use the
-`load_ecd` function like this.
+## Python
+
+``` python
+import ecdata as ec
+import polars as pl 
+
+ec.ecd_country_dictionary().head(int = 2)
+```
+
+## Loading the Executive Communications Dataset
+
+We offer variety of options to load the ECD. You can specify single
+countries
+
+## R
 
 ``` r
 load_ecd(country = 'United States of America') |>
@@ -66,28 +88,55 @@ load_ecd(country = 'United States of America') |>
     1      USA      USA       USA   20              1964
     2      USA      USA       USA   20              1964
 
-``` r
-load_ecd(country = c('United States of America', 'Turkey', 'Republic of South Korea')) |>
-    tail(n = 2)
+## Python
+
+``` python
+ec.load_ecd(country = 'United States of America').head(int = 2)
 ```
 
-    ✔ Successfully downloaded data for United States of America, Turkey, and Republic of South Korea
+You can specify multiple countries to `load_ecd` like this
 
-                            country
-    330255 United States of America
-    330256 United States of America
-                                                                                                         url
-    330255 https://www.presidency.ucsb.edu/documents/proclamation-10627-national-voter-registration-day-2023
-    330256 https://www.presidency.ucsb.edu/documents/proclamation-10627-national-voter-registration-day-2023
-                                                                                            text
-    330255                                                                      Twitter Facebook
-    330256 Copyright © The American Presidency ProjectTerms of Service | Privacy | Accessibility
-                 date title       executive                     type language file
-    330255 2023-09-18  <NA> Joseph R. Biden Presidential Proclamtion  English <NA>
-    330256 2023-09-18  <NA> Joseph R. Biden Presidential Proclamtion  English <NA>
-           isonumber gwc cowcodes polity_v polity_iv vdem year_of_statement
-    330255       840 USA      USA      USA       USA   20              2023
-    330256       840 USA      USA      USA       USA   20              2023
+## R
+
+``` r
+load_ecd(country = c('United States of America', 'Turkey', 'France'))  |>
+    head(n = 3)
+```
+
+    ✔ Successfully downloaded data for United States of America, Turkey, and France
+
+      country
+    1  France
+    2  France
+    3  France
+                                                                                           url
+    1 https://www.elysee.fr/emmanuel-macron/2020/01/06/conseil-des-ministres-du-6-janvier-2020
+    2 https://www.elysee.fr/emmanuel-macron/2020/01/06/conseil-des-ministres-du-6-janvier-2020
+    3 https://www.elysee.fr/emmanuel-macron/2020/01/06/conseil-des-ministres-du-6-janvier-2020
+                               text       date
+    1 6 janvier 2020 - Compte-rendu 2020-01-06
+    2                PROJETS DE LOI 2020-01-06
+    3                    ORDONNANCE 2020-01-06
+                                        title executive                 type
+    1 Conseil des ministres du 6 janvier 2020      <NA> Council Of Ministers
+    2 Conseil des ministres du 6 janvier 2020      <NA> Council Of Ministers
+    3 Conseil des ministres du 6 janvier 2020      <NA> Council Of Ministers
+      language file isonumber gwc cowcodes polity_v polity_iv vdem
+    1   French <NA>       250 FRN      FRN      FRN       FRN   76
+    2   French <NA>       250 FRN      FRN      FRN       FRN   76
+    3   French <NA>       250 FRN      FRN      FRN       FRN   76
+      year_of_statement
+    1              2020
+    2              2020
+    3              2020
+
+## Python
+
+``` python
+ec.load_ecd(country = {'United States of America', 'Turkey', 'France'}).head(n = 2)
+```
+
+For the Python version you can feed `load_ecd` a list or a dictionary.
 
 We also provide a set of an example scrappers in part to quickly
 summarize our replication files and for other researchers to either
