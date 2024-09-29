@@ -44,7 +44,7 @@
     "href": "vignettes/performance.html",
     "title": "Working With The Full Executive Communications Dataset",
     "section": "",
-    "text": "R\nPython"
+    "text": "R\nPython\n\n\n\n\nprint('hello world')\n\n[1] \"hello world\"\n\n\n\n\n\nprint('hello workld')\n\nhello workld"
   },
   {
     "objectID": "man/ecd_data_dictionary.html",
