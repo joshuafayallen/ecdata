@@ -223,31 +223,5 @@ walk(country_files, \(x) pb_upload(x, repo ='joshuafayallen/executivestatements'
 
 
 
+pb_release_delete(repo = 'joshuafayallen/executivestatements', tag = '1.1.1')
 
-table(fix_up$country)
-
-country_dict = fix_up |>
-  summarise(total= n(), .by = c(country, saving_name)) |>
-  mutate(lower_name = str_to_lower(country), 
-         copy_name = paste0('"', country, '"'),
-        lower_copy = paste0('"', lower_name, '"'),
-       saving_name_copy = paste0('"', saving_name, '"'),
-       copy_oveer = paste(paste0(copy_name,",") ,'',paste0(saving_name_copy, ',')))
-
-
-
-cat(country_dict$copy_oveer, sep = '\n')
-
-
-## lets benchmark nanoparquet 
-
-install.packages("nanoparquet")
-
-par_read_times = microbenchmark::microbenchmark(
-  `arrow::read_parquet` = arrow::read_parquet('executive_statement_data/full_executive_statement_data_v2.parquet'),
-  `nanoparquet::read_parquet`  = nanoparquet::read_parquet('executive_statement_data/full_executive_statement_data_v2.parquet'),
-  times = 20
-)
-
-
-autoplot(par_read_times)

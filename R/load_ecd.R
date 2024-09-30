@@ -2,8 +2,8 @@
 #'  
 #' This function imports data from the ECD 
 #'  
-#' @param country a character vector of country or countries in our dataset to download. for a list of valid names call `country_dictionary` 
-#' @param full_ecd to download the full ecd dataset set full_ecd to TRUE and don't provide an argument to the country argument
+#' @param country a character vector of country or countries in our dataset to download. For a list of valid names, call `country_dictionary` 
+#' @param full_ecd to download the full Executive Communications Dataset set full_ecd to TRUE and don't provide an argument to the country argument
 #' @param ecd_version a character of ecd versions. 
 #' @importFrom vctrs list_unchop
 #' @importFrom arrow read_parquet
@@ -44,7 +44,7 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
   
   url = glue::glue('https://github.com/joshuafayallen/executivestatements/releases/download/{ecd_version}/full_ecd.parquet')
   
-  ecd_data = arrow::read_parquet(url)
+  ecd_data = read_parquet(url)
     
   if(nrow(ecd_data) > 0){
     cli::cli_alert_success('Successfully downloaded the full ECD')
@@ -74,7 +74,8 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
       ecd_data = lapply(link_to_read, \(x) read_parquet(x))
 
       ecd_data = ecd_data |>
-        list_rbind()
+        list_unchop()
+
 
       if(nrow(ecd_data) != 0){
         cli::cli_alert_success('Successfully downloaded data for {country}')

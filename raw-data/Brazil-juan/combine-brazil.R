@@ -1,5 +1,5 @@
 library(tidyverse)
-library(rvest)
+
 
 brazil_files = list.files(
                           pattern = "*.csv",
@@ -38,10 +38,7 @@ fix_date_fun = \(data){
 cleaned_dates = map(read_in, \(x) fix_date_fun(x))
 
  bind_data = cleaned_dates |>
-  list_rbind(names_to = 'executive') |>
-  ## the cardosa data we can't really go back and like check it 
-   filter(president != 'Cardoso') |>
-   select(-note)
+  list_rbind(names_to = 'executive')
 
 ## umm flagging this here but I there is a weird row with juan's name in it? 
 add_titles = bind_data |>
@@ -51,13 +48,18 @@ add_titles = bind_data |>
          fix_title = str_to_title(fix_title),
         title = coalesce(title, fix_title),
         text = coalesce(content, text),
+        url = coalesce(url, x0 ),
          executive = case_match(president,
         'Lula' ~ 'Lula da Sillva',
         'Rousseff' ~ 'Dilma Rousseff',
         'Sarney' ~ 'José Sarney', 
-         'Temer' ~ 'Michel Temer')) |>
+         'Temer' ~ 'Michel Temer', 
+        'Cardoso' ~ 'Fernando Cardosa')) |>
   slice(-3482) |>
-  select(-id_flag, -fix_title, -president)
+  select(-id_flag, -fix_title, -president, -content, -x0, -note, -year)
+
+add_titles$executive |> table()
+
 
 redo_these = add_titles |>
   filter(is.na(title) | nchar(title) <= 3) |>
@@ -67,6 +69,9 @@ redo_these = add_titles |>
 
 clean = add_titles |>
   filter(!is.na(title) | nchar(title) > 3)
+
+
+glimpse(clean)
 
 write_csv(clean, 'brazil_statements.csv')
 

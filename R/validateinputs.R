@@ -34,7 +34,6 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
     })
 
 
-
   arrow_check = rlang::is_installed(pkg = 'arrow')
 
   parquet_check = arrow::arrow_info()$capabilities[4]
@@ -97,13 +96,14 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
   }
 
-  if(invalid_language == FALSE && !isTRUE(is.null(language))) 
+  if(invalid_language == FALSE && !isTRUE(is.null(language))){ 
 
    langs = country_dictionary()$language
 
    lang_not_in_dataset = setdiff(language, langs)
 
    cli::cli_abort("{lang_not_in_dataset} is not in our dataset. Call ecd_country_dictionary for a list of valid languages")
+  }
 
   if(!isTRUE(arrow_check)){
 
@@ -119,7 +119,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
 
 
-}
+  }
 
 
 
