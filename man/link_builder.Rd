@@ -4,7 +4,7 @@
 \alias{link_builder}
 \title{Build our links}
 \usage{
-link_builder(country, ecd_version)
+link_builder(country = NULL, language = NULL, ecd_version)
 }
 \description{
 Build our links

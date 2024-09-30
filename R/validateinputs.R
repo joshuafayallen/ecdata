@@ -29,7 +29,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
   countries = countries |>
     within({
-      name_in_dataset = tolower(name_in_dataset),
+      name_in_dataset = tolower(name_in_dataset)
       language = tolower(language)
     })
 

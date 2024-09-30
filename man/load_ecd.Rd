@@ -6,10 +6,17 @@
 
 This function imports data from the ECD}
 \usage{
-load_ecd(country = NULL, full_ecd = FALSE, ecd_version = "1.0.0")
+load_ecd(
+  country = NULL,
+  language = NULL,
+  full_ecd = FALSE,
+  ecd_version = "1.0.0"
+)
 }
 \arguments{
-\item{country}{a character vector of country or countries in our dataset to download. For a list of valid names, call \code{country_dictionary}}
+\item{country}{a character vector  with a country or countries in our dataset to download. For a list of valid names, call "ecd_country_dictionary"}
+
+\item{language}{a character vector with a lanaguage or languages in our dataset to download. For a list of valid languages call "ecd_country_dictionary"}
 
 \item{full_ecd}{to download the full Executive Communications Dataset set full_ecd to TRUE and don't provide an argument to the country argument}
 
