@@ -15,3 +15,5 @@
 ^README_files$
 ^README.html$
 ^.venv$
+^.nojekyll$
+^vignettes/
