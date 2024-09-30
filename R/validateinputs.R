@@ -60,7 +60,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
   }
 
-  if(!isTRUE(is.character(country)) && full_ecd == FALSE && isTRUE(is.null(language))){
+  if(!isTRUE(is.character(country)) && full_ecd  && isTRUE(is.null(language))){
 
     country_type = typeof(country)
 
@@ -69,7 +69,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
   }
 
-  if(!isTRUE(is.character(language)) && full_ecd == FALSE && isTRUE(is.null(language))){
+  if(!isTRUE(is.character(language)) && full_ecd && isTRUE(is.null(country))){
 
     lang_type = typeof(language)
 
@@ -84,7 +84,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
 
   }
-  if(invalid_countries == FALSE && !isTRUE(is.null(country))){
+  if(invalid_countries == FALSE && !isTRUE(is.null(country)) && isTRUE(is.null(language))){
 
     countries = country_dictionary()$name_in_dataset
 
@@ -96,7 +96,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
   }
 
-  if(invalid_language == FALSE && !isTRUE(is.null(language))){ 
+  if(invalid_language == FALSE && !isTRUE(is.null(language)) && isTRUE(is.null(country))){ 
 
    langs = country_dictionary()$language
 
