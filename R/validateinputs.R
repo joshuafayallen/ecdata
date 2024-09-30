@@ -21,21 +21,41 @@ return(versions)
 #' keywords @internal 
 #' @noRd
 
-validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
+validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = '1.0.0'){
  
   versions = get_ecd_release()
 
-  countries = country_dictionary()$name_in_dataset
+  countries = country_dictionary()
+
+  countries = countries |>
+    within({
+      name_in_dataset = tolower(name_in_dataset),
+      language = tolower(language)
+    })
+
+
 
   arrow_check = rlang::is_installed(pkg = 'arrow')
 
   parquet_check = arrow::arrow_info()$capabilities[4]
+   
+  country_lower = tolower(country)
 
-  invalid_countries = any(country %in% countries)
-  
+  check_country = countries$name_in_dataset
+
+  check_language = countries$language
+
+  lower_lang = tolower(language)
 
 
-  if(isTRUE(is.null(country)) && full_ecd == FALSE){
+  invalid_countries = any(country_lower %in% check_country)
+
+  invalid_language = any(lower_lang %in% check_language)
+
+
+
+
+  if(isTRUE(is.null(country)) && full_ecd == FALSE && isTRUE(is.null(language))){
 
    cli::cli_abort('Please provide a country name or set full_ecd to TRUE')
 
