@@ -55,7 +55,7 @@ out = utils::read.csv(
   
 out = out[, c(1:3)]
 
-for (i in 1:2) {
+for (i in 1:3) {
 
   out[[i]] = trimws(out[[i]])
   
