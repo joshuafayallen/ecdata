@@ -10,12 +10,22 @@ link_builder = \(country = NULL, language = NULL, ecd_version){
 
   if(!isTRUE(is.null(country)) && isTRUE(is.null(language))){
   
-    country_names = country_dictionary()
+    countries = country_dictionary()
+
+    countries = countries |>
+      within({
+        name_in_dataset = tolower(name_in_dataset)
+      })
+    
+    country_lower = tolower(country)
   
-    country_names = country_names[country_names$name_in_dataset %in% country,]
+    country_names = countries[countries$name_in_dataset %in% country_lower,]
+
+
   
     country_names = country_names |>
       within({
+        
         file_names = glue::glue('https://github.com/joshuafayallen/executivestatements/releases/download/{ecd_version}/{file_name}.parquet')
       })
       country_names = country_names$file_names
@@ -24,9 +34,17 @@ link_builder = \(country = NULL, language = NULL, ecd_version){
     
   if(isTRUE(is.null(country)) && !isTRUE(is.null(language))){
   
-    country_names = country_dictionary()
+    countries = country_dictionary()
+
+    countries = countries |>
+      within({
+        name_in_dataset = tolower(language)
+      })
+    
+    lang_lower = tolower(language)
   
-    country_names = country_names[country_names$language %in% language,]
+    country_names = countries[countries$lang %in% lang_lower,]
+
   
     country_names = country_names |>
       within({
@@ -38,9 +56,19 @@ link_builder = \(country = NULL, language = NULL, ecd_version){
     
     if(!isTRUE(is.null(country)) && !isTRUE(is.null(language))){
   
-      country_names = country_dictionary()
+      countries = country_dictionary()
+
+      countries = countries |>
+        within({
+          name_in_dataset = tolower(name_in_dataset)
+          language = tolower(language)
+        })
+      
+        lang_lower = tolower(language)
+      
+        country_lower = tolower(country)
   
-      country_names = country_names[country_names$language %in% language | country_names$name_in_dataset %in% country,]
+      country_names = countries[countries$language %in% lang_lower | countries$name_in_dataset %in% country_lower,]
   
       country_names = country_names |>
         within({
