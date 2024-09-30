@@ -6,8 +6,7 @@
 #' @param full_ecd to download the full Executive Communications Dataset set full_ecd to TRUE and don't provide an argument to the country argument
 #' @param ecd_version a character of ecd versions. 
 #' @importFrom vctrs list_unchop
-#' @importFrom arrow read_parquet
-#' @export
+#' 
 #' @examples
 #' \dontrun{
 #' library(ecdata)
@@ -35,16 +34,16 @@
 #' 
 
 
-load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '1.0.0'){
+load_ecd = \(country = NULL, full_ecd = FALSE, ecd_version = '1.0.0'){
 
   validate_inputs(country, full_ecd, version = ecd_version)
 
-  if(full_ecd == TRUE && isTRUE(is.null(country)) && isTRUE(is.null(language))){
+  if(full_ecd == TRUE && isTRUE(is.null(country))){
 
   
   url = glue::glue('https://github.com/joshuafayallen/executivestatements/releases/download/{ecd_version}/full_ecd.parquet')
   
-  ecd_data = read_parquet(url)
+  ecd_data = arrow::read_parquet(url)
     
   if(nrow(ecd_data) > 0){
     cli::cli_alert_success('Successfully downloaded the full ECD')
@@ -58,20 +57,21 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
   }
   
   
-  if(full_ecd == FALSE && length(country) == 1 && isTRUE(is.null(language))){
+  if(full_ecd == FALSE && length(country) == 1){
   
     link_to_read = link_builder(country =  country, ecd_version = ecd_version)
 
     
-    ecd_data = read_parquet(link_to_read)
+    ecd_data = arrow::read_parquet(link_to_read)
 
   
   }
-    if(full_ecd == FALSE && length(country) > 1 && isTRUE(is.null(language))){
+    if(full_ecd == FALSE && length(country) > 1){
 
       links_to_read = link_builder(country = country, ecd_version = ecd_version)
 
-      ecd_data = lapply(link_to_read, \(x) read_parquet(x))
+
+      ecd_data = lapply(links_to_read, \(x) arrow::read_parquet(x))
 
       ecd_data = ecd_data |>
         list_unchop()
@@ -83,49 +83,6 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
    
 
     }
-
-  if(full_ecd == FALSE && isTRUE(is.null(country)) && length(language) == 1){
-     
-    if(language == 'English'){
-      cli::cli_alert_info('Language is set to English. Note due to data availability Azerbaijan and Russian will be included in this data')
-    }
-
-    link_to_read = link_builder(country =  country, ecd_version = ecd_version)
-
-    
-    ecd_data = arrow::read_parquet(link_to_read)
-
-    if(nrow(ecd_data) > 0){
-
-      cli::cli_alert_success('Successfully downloaded data for {language}')
-    }
-
-
-  }
-
-  }
-
-  if(full_ecd == FALSE && isTRUE(is.null(country)) && length(language) > 1){
-     
-    if(language == 'English'){
-      cli::cli_alert_info('Language is set to English. Note due to data availability Azerbaijan and Russian will be included in this data')
-    }
-
-    links_to_read = link_builder(country =  country, ecd_version = ecd_version){
-
-
-
-    
-    ecd_data = lapply(links_to_read, \(x) read_parquet(x)) |>
-      list_unchop()
-
-    if(nrow(ecd_data) > 0){
-
-      cli::cli_alert_success('Successfully downloaded data for {language}')
-    }
-
-
-  }
 
     
   return(ecd_data)

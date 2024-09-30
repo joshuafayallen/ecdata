@@ -6,9 +6,8 @@
 #' 
 
 
-link_builder = \(country = NULL, ecd_version, language = NULL){
+link_builder = \(country, ecd_version){
 
-if(!isTRUE(is.null(country)) && isTRUE(is.null(language))){
 
   country_names = country_dictionary()
 
@@ -20,35 +19,7 @@ if(!isTRUE(is.null(country)) && isTRUE(is.null(language))){
     })
     country_names = country_names$file_names
 
-}
   
-if(isTRUE(is.null(country)) && !isTRUE(is.null(language))){
-
-  country_names = country_dictionary()
-
-  country_names = country_names[country_names$language %in% langauge,]
-
-  country_names = country_names |>
-    within({
-      file_names = glue::glue('https://github.com/joshuafayallen/executivestatements/releases/download/{ecd_version}/{file_name}.parquet')
-    })
-    country_names = country_names$file_names
-
-}
-  
-  if(!isTRUE(is.null(country)) && !isTRUE(is.null(language))){
-
-    country_names = country_dictionary()
-
-    country_names = country_names[country_names$language %in% langauge | country_names$name_in_dataset %in% country,]
-
-    country_names = country_names |>
-      within({
-        file_names = glue::glue('https://github.com/joshuafayallen/executivestatements/releases/download/{ecd_version}/{file_name}.parquet')
-      })
-      country_names = country_names$file_names
-
-  }
   
  
 
