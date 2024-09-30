@@ -34,7 +34,6 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
     })
 
 
-
   arrow_check = rlang::is_installed(pkg = 'arrow')
 
   parquet_check = arrow::arrow_info()$capabilities[4]
@@ -57,7 +56,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
   if(isTRUE(is.null(country)) && full_ecd == FALSE && isTRUE(is.null(language))){
 
-   cli::cli_abort('Please provide a country name or set full_ecd to TRUE')
+   cli::cli_abort('Please provide a country name, a language, or set full_ecd to TRUE')
 
   }
 
@@ -67,6 +66,14 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
     cli::cli_abort('Country should be a character vector but is {country_type}')
 
+
+  }
+
+  if(!isTRUE(is.character(language)) && full_ecd == FALSE){
+
+    lang_type = typeof(language)
+
+    cli::cli_abort('Language should be a character vector but is {lang_type}')
 
   }
 
@@ -83,10 +90,19 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
     countries_not_in_dataset = setdiff(country, countries)
 
-    cli::cli_abort('One of {countries_not_in_dataset} is not in our dataset. Call ecd_country_dictionary() for a list of valid country names')
+    cli::cli_abort('{countries_not_in_dataset} is not in our dataset. Call ecd_country_dictionary() for a list of valid country names')
 
 
 
+  }
+
+  if(invalid_language == FALSE && !isTRUE(is.null(language))){ 
+
+   langs = country_dictionary()$language
+
+   lang_not_in_dataset = setdiff(language, langs)
+
+   cli::cli_abort("{lang_not_in_dataset} is not in our dataset. Call ecd_country_dictionary for a list of valid languages")
   }
 
   if(!isTRUE(arrow_check)){
@@ -103,8 +119,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
 
 
-}
-
+  }
 
 
 
