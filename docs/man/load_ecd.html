@@ -200,7 +200,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Reading Executive Communications Dataset</p>
 <p>This function imports data from the ECD</p>
 </section><section id="usage" class="level3"><h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">load_ecd(country = NULL, full_ecd = FALSE, ecd_version = "1.0.0")
+<pre><code class="language-R">load_ecd(
+  country = NULL,
+  language = NULL,
+  full_ecd = FALSE,
+  ecd_version = "1.0.0"
+)
 </code></pre>
 </section><section id="arguments" class="level3"><h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
 <table>
@@ -209,7 +214,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code id="country">country</code>
 </td>
 <td>
-a character vector of country or countries in our dataset to download. For a list of valid names, call <code>country_dictionary</code>
+a character vector with a country or countries in our dataset to download. For a list of valid names, call "ecd_country_dictionary"
+</td>
+</tr>
+<tr>
+<td style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<code id="language">language</code>
+</td>
+<td>
+a character vector with a lanaguage or languages in our dataset to download. For a list of valid languages call "ecd_country_dictionary"
 </td>
 </tr>
 <tr>

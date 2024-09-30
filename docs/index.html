@@ -191,6 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="#installation" id="toc-installation" class="nav-link active" data-scroll-target="#installation">Installation</a></li>
   <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#loading-the-executive-communications-dataset" id="toc-loading-the-executive-communications-dataset" class="nav-link" data-scroll-target="#loading-the-executive-communications-dataset">Loading the Executive Communications Dataset</a></li>
+  <li><a href="#example-scrappers" id="toc-example-scrappers" class="nav-link" data-scroll-target="#example-scrappers">Example Scrappers</a></li>
   </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="undefined"><i class="bi bi-link-45deg"></i></a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -208,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pak/man/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">'joshuafayallen/ecdata'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html">pkg_install</a></span><span class="op">(</span><span class="st">'joshuafayallen/ecdata'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
@@ -341,6 +342,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>For the Python version you can feed <code>load_ecd</code> a list or a dictionary.</p>
+</section><section id="example-scrappers" class="level2"><h2 class="anchored" data-anchor-id="example-scrappers">Example Scrappers</h2>
 <p>We also provide a set of an example scrappers in part to quickly summarize our replication files and for other researchers to either collect more recent data or expand the cases in our dataset. To call these scrappers simply run:</p>
 <div class="cell">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># static website scrapper</span></span>
@@ -350,6 +352,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ecdata/man/example_scrapper.html">example_scrapper</a></span><span class="op">(</span>scrapper_type <span class="op">=</span> <span class="st">'dynamic'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>If <code>scrapper_type = 'static'</code> this will open a R script in your current editor. If <code>scrapper_type = 'dynamic'</code> this will open a Python script in your editor.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

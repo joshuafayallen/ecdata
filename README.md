@@ -138,6 +138,8 @@ ec.load_ecd(country = {'United States of America', 'Turkey', 'France'}).head(n =
 
 For the Python version you can feed `load_ecd` a list or a dictionary.
 
+## Example Scrappers
+
 We also provide a set of an example scrappers in part to quickly
 summarize our replication files and for other researchers to either
 collect more recent data or expand the cases in our dataset. To call
@@ -151,3 +153,7 @@ example_scrapper(scrapper_type = 'static')
 
 example_scrapper(scrapper_type = 'dynamic')
 ```
+
+If `scrapper_type = 'static'` this will open a R script in your current
+editor. If `scrapper_type = 'dynamic'` this will open a Python script in
+your editor.
