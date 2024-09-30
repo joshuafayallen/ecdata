@@ -60,7 +60,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
   }
 
-  if(!isTRUE(is.character(country)) && full_ecd == FALSE){
+  if(!isTRUE(is.character(country)) && full_ecd == FALSE && isTRUE(is.null(language))){
 
     country_type = typeof(country)
 
@@ -69,7 +69,7 @@ validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = 
 
   }
 
-  if(!isTRUE(is.character(language)) && full_ecd == FALSE){
+  if(!isTRUE(is.character(language)) && full_ecd == FALSE && isTRUE(is.null(language))){
 
     lang_type = typeof(language)
 
