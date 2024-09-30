@@ -21,15 +21,43 @@ return(versions)
 #' keywords @internal 
 #' @noRd
 
-validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
+validate_inputs = \(country = NULL,language = NULL, full_ecd = FALSE, version = '1.0.0'){
  
   versions = get_ecd_release()
 
-  countries = country_dictionary()$name_in_dataset
+  countries = country_dictionary()
 
-  if(isTRUE(is.null(country)) && full_ecd == FALSE){
+  countries = countries |>
+    within({
+      name_in_dataset = tolower(name_in_dataset),
+      language = tolower(language)
+    })
 
-   cli::cli_abort('Please provide a country name or set full_ecd to TRUE')
+
+
+  arrow_check = rlang::is_installed(pkg = 'arrow')
+
+  parquet_check = arrow::arrow_info()$capabilities[4]
+   
+  country_lower = tolower(country)
+
+  check_country = countries$name_in_dataset
+
+  check_language = countries$language
+
+  lower_lang = tolower(language)
+
+
+  invalid_countries = any(country_lower %in% check_country)
+
+  invalid_language = any(lower_lang %in% check_language)
+
+
+
+
+  if(isTRUE(is.null(country)) && full_ecd == FALSE && isTRUE(is.null(language))){
+
+   cli::cli_abort('Please provide a country name, a language, or set full_ecd to TRUE')
 
   }
 
@@ -42,6 +70,14 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
   }
 
+  if(!isTRUE(is.character(language)) && full_ecd == FALSE){
+
+    lang_type = typeof(language)
+
+    cli::cli_abort('Language should be a character vector but is {lang_type}')
+
+  }
+
   if(!version %in% versions){
 
 
@@ -49,18 +85,41 @@ validate_inputs = \(country = NULL, full_ecd = FALSE, version = '1.0.0'){
 
 
   }
-  if(!country %in% countries){
-    
-    cli::cli_abort('Stop {country} is not in our dataset. Call country_names() for a list of valid country names')
+  if(invalid_countries == FALSE && !isTRUE(is.null(country))){
+
+    countries = country_dictionary()$name_in_dataset
+
+    countries_not_in_dataset = setdiff(country, countries)
+
+    cli::cli_abort('{countries_not_in_dataset} is not in our dataset. Call ecd_country_dictionary() for a list of valid country names')
 
 
+
+  }
+
+  if(invalid_language == FALSE && !isTRUE(is.null(language))) 
+
+   langs = country_dictionary()$language
+
+   lang_not_in_dataset = setdiff(language, langs)
+
+   cli::cli_abort("{lang_not_in_dataset} is not in our dataset. Call ecd_country_dictionary for a list of valid languages")
+
+  if(!isTRUE(arrow_check)){
+
+    cli::cli_abort("Arrow is not installed please install arrow")
+
+  }
+
+  if(!isTRUE(arrow_check) && Sys.info()['sysname'] == 'Darwin'){
+
+   cli::cli_abort('Parquet support was not detected and it looks like you are on a Mac. This is usually resolved by installing the development version of arrow. Please run \n install.packages("arrow", repos = "https://apache.r-universe.dev") ')
 
   }
 
 
 
 }
-
 
 
 

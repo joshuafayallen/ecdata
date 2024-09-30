@@ -18,3 +18,30 @@ raw-data/USA-Josh/explainer of presidency scraper_files/libs
 altdoc/freeze.rds
 _quarto/*
 !_quarto/_freeze/
+developer-notes
+*.venv
+*.csv
+raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/*.txt
+*.pdf
+*.Rproj
+*.Rproj.user
+*.DS_Store
+raw-data/Venzuela-Josh/webpages
+raw-data/Israel-copy/webpages
+raw-data/Portugal-Josh/President/news/raw_webpages
+raw-data/Venzuela-Josh/test_Data.html
+raw-data/upload-to-the-duck
+*.vdoc.py
+*.vdoc.r
+raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/direttiva_03052012.png
+raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_images
+raw-data/USA-Josh/explainer of presidency scraper_files/libs
+.Rproj.user
+*.parquet
+altdoc/freeze.rds
+_quarto/*
+!_quarto/_freeze/
+revdep
+
+/.quarto/
+^_quarto$

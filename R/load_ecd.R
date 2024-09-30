@@ -5,16 +5,41 @@
 #' @param country a character vector of country or countries in our dataset to download. for a list of valid names call `country_dictionary` 
 #' @param full_ecd to download the full ecd dataset set full_ecd to TRUE and don't provide an argument to the country argument
 #' @param ecd_version a character of ecd versions. 
-#' @importFrom purrr list_rbind
+#' @importFrom vctrs list_unchop
+#' @importFrom arrow read_parquet
+#' @export
+#' @examples
+#' \dontrun{
+#' library(ecdata)
+#' 
+#' ## load one country 
+#' 
+#' load_ecd(country = 'United States of America')
+#' 
+#' ## displays data from the USA
+#' 
+#' 
+#' ## load multiple countries 
+#' 
+#' load_ecd(country = c('Turkey', 'Republic of South Korea', 'India'))
+#'
+#' ## displays data from Turkey, South Korea, and India
+#' 
+#' # load full ecd 
+#' 
+#' 
+#' load_ecd(full_ecd = TRUE)
+#' }
+#' 
 #' @export
 #' 
 
 
-load_ecd = \(country = NULL, full_ecd = FALSE, ecd_version = '1.0.0'){
+load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '1.0.0'){
 
   validate_inputs(country, full_ecd, version = ecd_version)
 
-  if(full_ecd == TRUE && isTRUE(is.null(country))){
+  if(full_ecd == TRUE && isTRUE(is.null(country)) && isTRUE(is.null(language))){
 
   
   url = glue::glue('https://github.com/joshuafayallen/executivestatements/releases/download/{ecd_version}/full_ecd.parquet')
@@ -33,20 +58,20 @@ load_ecd = \(country = NULL, full_ecd = FALSE, ecd_version = '1.0.0'){
   }
   
   
-  if(full_ecd == FALSE && length(country) == 1){
+  if(full_ecd == FALSE && length(country) == 1 && isTRUE(is.null(language))){
   
     link_to_read = link_builder(country =  country, ecd_version = ecd_version)
 
     
-    ecd_data = arrow::read_parquet(link_to_read)
+    ecd_data = read_parquet(link_to_read)
 
   
   }
-    if(full_ecd == FALSE && length(country) > 1){
+    if(full_ecd == FALSE && length(country) > 1 && isTRUE(is.null(language))){
 
       links_to_read = link_builder(country = country, ecd_version = ecd_version)
 
-      ecd_data = lapply(link_to_read, \(x) arrow::read_parquet(x))
+      ecd_data = lapply(link_to_read, \(x) read_parquet(x))
 
       ecd_data = ecd_data |>
         list_rbind()
@@ -57,6 +82,49 @@ load_ecd = \(country = NULL, full_ecd = FALSE, ecd_version = '1.0.0'){
    
 
     }
+
+  if(full_ecd == FALSE && isTRUE(is.null(country)) && length(language) == 1){
+     
+    if(language == 'English'){
+      cli::cli_alert_info('Language is set to English. Note due to data availability Azerbaijan and Russian will be included in this data')
+    }
+
+    link_to_read = link_builder(country =  country, ecd_version = ecd_version)
+
+    
+    ecd_data = arrow::read_parquet(link_to_read)
+
+    if(nrow(ecd_data) > 0){
+
+      cli::cli_alert_success('Successfully downloaded data for {language}')
+    }
+
+
+  }
+
+  }
+
+  if(full_ecd == FALSE && isTRUE(is.null(country)) && length(language) > 1){
+     
+    if(language == 'English'){
+      cli::cli_alert_info('Language is set to English. Note due to data availability Azerbaijan and Russian will be included in this data')
+    }
+
+    links_to_read = link_builder(country =  country, ecd_version = ecd_version){
+
+
+
+    
+    ecd_data = lapply(links_to_read, \(x) read_parquet(x)) |>
+      list_unchop()
+
+    if(nrow(ecd_data) > 0){
+
+      cli::cli_alert_success('Successfully downloaded data for {language}')
+    }
+
+
+  }
 
     
   return(ecd_data)
