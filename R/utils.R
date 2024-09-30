@@ -38,18 +38,19 @@ link_builder = \(country = NULL, language = NULL, ecd_version){
 
     countries = countries |>
       within({
-        name_in_dataset = tolower(language)
+        language = tolower(language)
       })
     
     lang_lower = tolower(language)
   
-    country_names = countries[countries$lang %in% lang_lower,]
+    country_names = countries[countries$language %in% lang_lower,]
 
   
     country_names = country_names |>
       within({
         file_names = glue::glue('https://github.com/joshuafayallen/executivestatements/releases/download/{ecd_version}/{file_name}.parquet')
       })
+    
       country_names = country_names$file_names
   
   }
@@ -69,11 +70,15 @@ link_builder = \(country = NULL, language = NULL, ecd_version){
         country_lower = tolower(country)
   
       country_names = countries[countries$language %in% lang_lower | countries$name_in_dataset %in% country_lower,]
-  
+        
+      
+
       country_names = country_names |>
         within({
           file_names = glue::glue('https://github.com/joshuafayallen/executivestatements/releases/download/{ecd_version}/{file_name}.parquet')
         })
+      
+      
         country_names = country_names$file_names
   
     }
