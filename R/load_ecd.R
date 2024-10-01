@@ -96,10 +96,11 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
       cli::cli_alert_info('Language is set to English. Note due to data availability Azerbaijan and Russian will be included in this data')
     }
 
-    link_to_read = link_builder(language = language, ecd_version = ecd_version)
+    links_to_read = link_builder(language = language, ecd_version = ecd_version)
 
     
-    ecd_data = arrow::read_parquet(link_to_read)
+    ecd_data = lapply(links_to_read, \(x) read_parquet(x)) |> 
+      list_unchop()
 
     if(nrow(ecd_data) > 0){
 
