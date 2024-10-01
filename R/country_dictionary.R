@@ -2,6 +2,7 @@
 #' keywords @internal 
 #' @noRd
 
+
 country_dictionary = \(){
   
   country_names = 'name_in_dataset, file_name, language,
@@ -46,7 +47,7 @@ country_dictionary = \(){
         United Kingdom,  united_kingdom, English,
         United States of America,  united_states_of_america, English,
         Uruguay,  uruguay, Spanish,
-        Venzuela,  venzuela, Spanish'
+        Venezuela,  venezuela, Spanish'
 
 out = utils::read.csv(
   text = country_names,

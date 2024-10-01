@@ -26,6 +26,7 @@ get_latest_files = add_country_names |>
                                  country_name == 'South' ~ 'Republic of South Korea',
                                 country_name == 'Czech' ~ 'Czechia',
                                 country_name == 'Phillipines' ~ 'Philippines',
+                                country_name == 'Venzuela' ~ 'Venezuela',
                                  .default = country_name))
 
 
@@ -49,7 +50,7 @@ clean_up = bind_data |>
         executive = coalesce(executive, exec_one, president),
         country = str_squish(country), 
         url = coalesce(url,links),
-      file = coalesce(file, files)) 
+        file = coalesce(file, files)) 
 
 
 add_identifiers = clean_up |>
@@ -153,6 +154,9 @@ add_types = exec_data |>
 )) |>
   collect()
 
+
+
+
 fix_types = add_types |>
   mutate(
     type = str_to_title(type),
@@ -160,6 +164,7 @@ fix_types = add_types |>
   type = data.table::fcoalesce(type, fix_types),
      language = str_to_title(language)) |>
   select(-fix_types)
+
 
 
 
@@ -175,6 +180,9 @@ fix_up = exec_data |>
   ungroup() |>
   filter(!is.na(text))
 
+
+  
+
 write_parquet(fix_up, 'executive_statement_data/full_executive_statement_data_v2.parquet')
 
 fix_up |>
@@ -183,6 +191,11 @@ fix_up |>
          saving_name = str_to_lower(saving_name)) |>
   group_by(saving_name) |>
   write_dataset('partioned-exec-data', existing_data_behavior = 'overwrite')
+
+
+
+
+
 
 
 ## this is just for the manuscript 
@@ -223,5 +236,5 @@ walk(country_files, \(x) pb_upload(x, repo ='joshuafayallen/executivestatements'
 
 
 
-pb_release_delete(repo = 'joshuafayallen/executivestatements', tag = '1.1.1')
+
 
