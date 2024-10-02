@@ -92,7 +92,7 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
 
   if(full_ecd == FALSE && isTRUE(is.null(country)) && !isTRUE(is.null(language))){
      
-    if(language == 'English'){
+    if('English' %in% language){
       cli::cli_alert_info('Language is set to English. Note due to data availability Azerbaijan and Russian will be included in this data')
     }
 
