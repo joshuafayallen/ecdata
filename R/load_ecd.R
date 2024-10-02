@@ -58,8 +58,7 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
     
   }
   
-  
-  }
+
     if(full_ecd == FALSE && !isTRUE(is.null(country)) && isTRUE(is.null(language))){
 
       links_to_read = link_builder(country = country, ecd_version = ecd_version)
