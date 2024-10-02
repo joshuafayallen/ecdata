@@ -77,7 +77,7 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
 
       links_to_read = link_builder(country = country, ecd_version = ecd_version)
 
-      ecd_data = lapply(link_to_read, \(x) read_parquet(x))
+      ecd_data = lapply(links_to_read, \(x) read_parquet(x))
 
       ecd_data = ecd_data |>
         list_unchop()
@@ -90,7 +90,7 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
 
     }
 
-  if(full_ecd == FALSE && isTRUE(is.null(country)) && length(language) == 1){
+  if(full_ecd == FALSE && isTRUE(is.null(country)) && !isTRUE(is.null(language))){
      
     if(language == 'English'){
       cli::cli_alert_info('Language is set to English. Note due to data availability Azerbaijan and Russian will be included in this data')
@@ -109,30 +109,8 @@ load_ecd = \(country = NULL, language = NULL , full_ecd = FALSE, ecd_version = '
 
 
   }
-
-  if(full_ecd == FALSE && isTRUE(is.null(country)) && length(language) > 1){
-     
-    if(language == 'English'){
-      cli::cli_alert_info('Language is set to English. Note due to data availability Azerbaijan and Russian will be included in this data')
-    }
-
-    links_to_read = link_builder(language = language, ecd_version = ecd_version)
-
-
-
     
-    ecd_data = lapply(links_to_read, \(x) read_parquet(x)) |>
-      list_unchop()
-
-    if(nrow(ecd_data) > 0){
-
-      cli::cli_alert_success('Successfully downloaded data for {language}')
-    }
-
-
-  }
-    
-  if(full_ecd == FALSE && length(language) >= 1 && length(country) >= 1){
+  if(full_ecd == FALSE && !isTRUE(is.null(country)) && !isTRUE(is.null(language))){
 
      links_to_read = link_builder(country = country, language = language)
     
