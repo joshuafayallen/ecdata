@@ -167,8 +167,13 @@ fix_types = add_types |>
 
 
 
+fix_types |>
+  mutate(saving_name = str_replace_all(country, ' ', '_'),
+         saving_name = str_squish(saving_name),
+         saving_name = str_to_lower(saving_name)) |>
+  group_by(saving_name) |>
+  write_dataset('partioned-exec-data', existing_data_behavior = 'overwrite')
 
-write_parquet(fix_types, 'handofftopolars/exec_small.parquet')
 
 
 
@@ -183,7 +188,6 @@ fix_up = exec_data |>
 
   
 
-write_parquet(fix_up, 'executive_statement_data/full_executive_statement_data_v2.parquet')
 
 fix_up |>
   mutate(saving_name = str_replace_all(country, ' ', '_'),
@@ -192,14 +196,6 @@ fix_up |>
   group_by(saving_name) |>
   write_dataset('partioned-exec-data', existing_data_behavior = 'overwrite')
 
-
-
-
-
-
-
-## this is just for the manuscript 
-write_parquet(fix_up, '/Users/josh/Library/CloudStorage/Dropbox/EAD NSF RA Work/Paper Ideas/Scraping Dataset/technical-writeup/executive_statement_data/full_ecd.parquet')
 
 
 if(!dir.exists('piggyback-release-data')){
@@ -221,20 +217,15 @@ length(make_splits) == length(saving_name)
 
 walk2(make_splits, saving_name, \(data, name) write_parquet(data, paste0('piggyback-release-data/', paste0(name, '.parquet'))))
 
-write_parquet(fix_up, 'piggyback-release-data/full_ecd.parquet')
 
-
-
-
-piggyback::pb_release_create('joshuafayallen/executivestatements', tag = '1.0.0')
+piggyback::pb_release_create('Executive-Communications-Dataset/ecdata', tag = '1.0.0')
 
 
 
 country_files = list.files('piggyback-release-data', pattern = '*.parquet', full.names = TRUE)
 
-walk(country_files, \(x) pb_upload(x, repo ='joshuafayallen/executivestatements', tag = '1.0.0'))
 
-
+walk(country_files, \(x) pb_upload(x, repo ='Executive-Communications-Dataset/ecdata', tag = '1.0.0'))
 
 
 

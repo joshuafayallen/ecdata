@@ -1,26 +1,17 @@
-developer-notes
+*.Rproj
 *.venv
-*.csv
-raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/*.txt
+*.DS_Store
+*.parquet
+*.html
 *.pdf
+*.png
+*.jpeg
+*.xlsx
 *.Rproj
 *.Rproj.user
-*.DS_Store
-raw-data/Venzuela-Josh/webpages
-raw-data/Israel-copy/webpages
-raw-data/Portugal-Josh/President/news/raw_webpages
-raw-data/Venzuela-Josh/test_Data.html
-raw-data/upload-to-the-duck
+*.pper
+*.vdoc.R
 *.vdoc.py
-*.vdoc.r
-raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_pdfs/direttiva_03052012.png
-raw-data/Italy-Miles/past_presidents/Governo Monti_statements/raw_images
-raw-data/USA-Josh/explainer of presidency scraper_files/libs
-.Rproj.user
-*.parquet
-altdoc/freeze.rds
-_quarto/*
-!_quarto/_freeze/
-
-/.quarto/
-^_quarto$
+France/pm
+Italy/past_presidents/Governo Monti_statements/raw_pdfs/
+*.csv
